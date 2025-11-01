@@ -2,3 +2,229 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  /* Custom color palette */
+  :root {
+    --primary: 37 99 235;
+    --primary-dark: 29 78 216;
+    --secondary: 139 92 246;
+    --success: 16 185 129;
+    --warning: 245 158 11;
+    --danger: 239 68 68;
+    --info: 59 130 246;
+  }
+
+  body {
+    @apply antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  /* Smooth focus rings */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-blue-500 ring-offset-2;
+  }
+}
+
+@layer components {
+  /* Professional shadows */
+  .shadow-elegant {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  }
+
+  .shadow-elegant-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  }
+
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-all duration-300 ease-out;
+    transition-property: transform, box-shadow;
+  }
+
+  .card-hover:hover {
+    @apply -translate-y-1;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+  }
+
+  /* Button animations */
+  .btn-animate {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  .btn-animate:active {
+    @apply scale-95;
+  }
+
+  /* Gradient backgrounds */
+  .gradient-primary {
+    background: linear-gradient(135deg, rgb(59, 130, 246) 0%, rgb(37, 99, 235) 100%);
+  }
+
+  .gradient-success {
+    background: linear-gradient(135deg, rgb(16, 185, 129) 0%, rgb(5, 150, 105) 100%);
+  }
+
+  .gradient-danger {
+    background: linear-gradient(135deg, rgb(239, 68, 68) 0%, rgb(220, 38, 38) 100%);
+  }
+
+  /* Glassmorphism effect */
+  .glass {
+    @apply bg-white bg-opacity-80 backdrop-blur-lg border border-white border-opacity-20;
+  }
+
+  /* Table enhancements */
+  .table-hover tr {
+    @apply transition-colors duration-150;
+  }
+
+  .table-hover tr:hover {
+    @apply bg-blue-50;
+  }
+
+  /* Badge animations */
+  .badge-pulse {
+    animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+@layer utilities {
+  /* Page transitions */
+  .page-enter-active,
+  .page-leave-active {
+    @apply transition-opacity duration-300;
+  }
+
+  .page-enter-from,
+  .page-leave-to {
+    @apply opacity-0;
+  }
+
+  /* Slide transitions */
+  .slide-enter-active,
+  .slide-leave-active {
+    @apply transition-transform duration-300 ease-out;
+  }
+
+  .slide-enter-from {
+    @apply -translate-x-4;
+  }
+
+  .slide-leave-to {
+    @apply translate-x-4;
+  }
+
+  /* Fade up animation */
+  .fade-up-enter-active {
+    @apply transition-all duration-500 ease-out;
+  }
+
+  .fade-up-enter-from {
+    @apply opacity-0 translate-y-4;
+  }
+}
+
+/* Animations */
+@keyframes pulse-ring {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton {
+  @apply bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200;
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+/* Loading spinner enhancements */
+@keyframes spin-smooth {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin-smooth {
+  animation: spin-smooth 1s linear infinite;
+}
+
+/* Scrollbar styling */
+.custom-scrollbar::-webkit-scrollbar {
+  @apply w-2 h-2;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-neutral-800 rounded-full;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-neutral-600 rounded-full hover:bg-gray-400 dark:hover:bg-neutral-500;
+  transition: background-color 0.2s;
+}
+
+/* Dark mode global scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: #262626;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #525252;
+  border-radius: 5px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #6b6b6b;
+}
+
+/* Toast notifications dark mode */
+.dark .Vue-Toastification__toast {
+  background-color: #262626 !important;
+  color: #ffffff !important;
+}
+
+.dark .Vue-Toastification__toast--success {
+  background-color: #34D399 !important;
+  color: #000000 !important;
+}
+
+.dark .Vue-Toastification__toast--error {
+  background-color: #F87171 !important;
+  color: #000000 !important;
+}
+
+.dark .Vue-Toastification__toast--warning {
+  background-color: #FBBF24 !important;
+  color: #000000 !important;
+}
+
+.dark .Vue-Toastification__toast--info {
+  background-color: #3B82F6 !important;
+  color: #ffffff !important;
+}
+
+.dark .Vue-Toastification__close-button {
+  color: #ffffff !important;
+}
+
+/* Ensure toast text is readable */
+.Vue-Toastification__toast {
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  padding: 16px 20px !important;
+}
+

@@ -55,12 +55,12 @@ const props = defineProps({
 const emit = defineEmits(['click'])
 
 const buttonClasses = computed(() => {
-  const baseClasses = 'inline-flex items-center justify-center px-4 py-2 rounded-md font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+  const baseClasses = 'inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed btn-animate shadow-sm hover:shadow-md'
   
   const variantClasses = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 active:bg-blue-800',
-    secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-500 active:bg-gray-400',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 active:bg-red-800'
+    primary: 'bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-500 text-white hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-500 dark:hover:to-blue-600 focus:ring-blue-500 shadow-blue-100 dark:shadow-blue-900/50',
+    secondary: 'bg-gray-100 dark:bg-neutral-700 text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-neutral-600 focus:ring-gray-400 dark:focus:ring-gray-500 border border-gray-200 dark:border-neutral-600',
+    danger: 'bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-500 text-white hover:from-red-600 hover:to-red-700 dark:hover:from-red-500 dark:hover:to-red-600 focus:ring-red-500 shadow-red-100 dark:shadow-red-900/50'
   }
   
   return `${baseClasses} ${variantClasses[props.variant]}`

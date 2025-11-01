@@ -18,19 +18,19 @@
         <!-- Modal container -->
         <div class="flex min-h-full items-center justify-center p-4">
           <div
-            class="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-auto transform transition-all"
+            class="relative bg-white dark:bg-neutral-800 rounded-2xl shadow-elegant-lg max-w-md w-full mx-auto transform transition-all border border-gray-100 dark:border-neutral-700 overflow-hidden"
             @click.stop
           >
             <!-- Header -->
             <div
               v-if="title || $slots.header"
-              class="flex items-center justify-between px-6 py-4 border-b border-gray-200"
+              class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-neutral-700 bg-gradient-to-r from-gray-50 to-white dark:from-neutral-800 dark:to-neutral-800"
             >
               <div class="flex-1">
                 <h2
                   v-if="title"
                   :id="titleId"
-                  class="text-xl font-semibold text-gray-800"
+                  class="text-xl font-bold text-gray-900 dark:text-white"
                 >
                   {{ title }}
                 </h2>
@@ -39,11 +39,11 @@
               <button
                 v-if="closable"
                 @click="handleClose"
-                class="ml-4 text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 transition-colors"
+                class="ml-4 text-gray-400 dark:text-gray-300 hover:text-gray-600 dark:hover:text-white focus:outline-none focus:text-gray-600 dark:focus:text-white transition-all duration-200 hover:bg-gray-100 dark:hover:bg-neutral-700 rounded-lg p-1 btn-animate"
                 aria-label="Close modal"
               >
                 <svg
-                  class="w-6 h-6"
+                  class="w-5 h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -60,14 +60,14 @@
             </div>
 
             <!-- Content -->
-            <div class="px-6 py-4 max-h-[calc(100vh-200px)] overflow-y-auto">
+            <div class="px-6 py-5 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
               <slot></slot>
             </div>
 
             <!-- Footer -->
             <div
               v-if="$slots.footer"
-              class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-lg"
+              class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 dark:border-neutral-700 bg-gradient-to-br from-gray-50 to-white dark:from-neutral-800 dark:to-neutral-800 rounded-b-2xl"
             >
               <slot name="footer"></slot>
             </div>
@@ -167,7 +167,7 @@ onUnmounted(() => {
 <style scoped>
 .modal-enter-active,
 .modal-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .modal-enter-from,
@@ -176,14 +176,29 @@ onUnmounted(() => {
 }
 
 .modal-enter-active .bg-white,
-.modal-leave-active .bg-white {
-  transition: transform 0.3s ease, opacity 0.3s ease;
+.modal-leave-active .bg-white,
+.modal-enter-active .dark\:bg-neutral-800,
+.modal-leave-active .dark\:bg-neutral-800 {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .modal-enter-from .bg-white,
-.modal-leave-to .bg-white {
+.modal-leave-to .bg-white,
+.modal-enter-from .dark\:bg-neutral-800,
+.modal-leave-to .dark\:bg-neutral-800 {
   opacity: 0;
-  transform: scale(0.95);
+  transform: scale(0.95) translateY(-20px);
+}
+
+/* Backdrop blur effect */
+.modal-enter-active .fixed.inset-0,
+.modal-leave-active .fixed.inset-0 {
+  transition: opacity 0.25s ease, backdrop-filter 0.25s ease;
+}
+
+.modal-enter-from .fixed.inset-0,
+.modal-leave-to .fixed.inset-0 {
+  backdrop-filter: blur(0);
 }
 </style>
 

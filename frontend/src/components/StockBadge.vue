@@ -1,13 +1,14 @@
 <template>
   <div
-    class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium"
+    class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full font-bold text-sm"
     :class="badgeClasses"
     :title="tooltipText"
     role="status"
     :aria-label="ariaLabel"
   >
-    <span class="font-semibold">{{ current }}</span>
-    <span class="text-xs opacity-75">/ {{ minimum }}</span>
+    <span class="font-bold">{{ current }}</span>
+    <span class="font-bold">/</span>
+    <span class="font-bold">{{ minimum }}</span>
     <span
       v-if="showPercentage"
       class="ml-1 text-xs opacity-75"
@@ -56,9 +57,9 @@ const badgeClasses = computed(() => {
   const baseClasses = 'transition-colors duration-200'
   
   const statusClasses = {
-    low: 'bg-red-100 text-red-800 border border-red-200',
-    warning: 'bg-yellow-100 text-yellow-800 border border-yellow-200',
-    good: 'bg-green-100 text-green-800 border border-green-200'
+    low: 'bg-red-100 dark:bg-red-400 text-red-800 dark:text-black',
+    warning: 'bg-yellow-100 dark:bg-yellow-400 text-yellow-800 dark:text-black',
+    good: 'bg-green-100 dark:bg-green-400 text-green-800 dark:text-black'
   }
   
   return `${baseClasses} ${statusClasses[status.value]}`

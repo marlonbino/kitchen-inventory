@@ -1,21 +1,21 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-900 p-6 md:p-8 lg:p-10">
     <div class="max-w-7xl mx-auto">
       <!-- Page Header -->
-      <div class="mb-6">
-        <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p class="text-gray-600 mt-1">Overview of your kitchen inventory</p>
+      <div class="mb-8 fade-up-enter-active">
+        <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white mb-2 bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">Dashboard</h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300 font-medium">Complete overview of your kitchen inventory</p>
       </div>
 
       <!-- Loading Skeleton -->
       <div v-if="loading && !dashboardStats" class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div v-for="n in 4" :key="n" class="bg-white rounded-lg shadow-md p-6 animate-pulse">
-            <div class="h-4 bg-gray-200 rounded w-1/2 mb-3"></div>
-            <div class="h-8 bg-gray-200 rounded w-3/4"></div>
+          <div v-for="n in 4" :key="n" class="bg-white dark:bg-neutral-800 rounded-lg shadow-md p-6 animate-pulse">
+            <div class="h-4 bg-gray-200 dark:bg-neutral-700 rounded w-1/2 mb-3"></div>
+            <div class="h-8 bg-gray-200 dark:bg-neutral-700 rounded w-3/4"></div>
           </div>
         </div>
-        <div class="bg-white rounded-lg shadow-md p-6 animate-pulse">
+        <div class="bg-white dark:bg-neutral-800 rounded-lg shadow-md p-6 animate-pulse">
           <div class="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
           <div class="space-y-3">
             <div v-for="n in 5" :key="n" class="h-16 bg-gray-200 rounded"></div>
@@ -24,16 +24,16 @@
       </div>
 
       <!-- Error State -->
-      <div v-else-if="error && !loading" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+      <div v-else-if="error && !loading" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
         <div class="flex items-center">
-          <svg class="w-5 h-5 text-red-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <svg class="w-5 h-5 text-red-600 dark:text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
           </svg>
-          <p class="text-red-800">Error loading dashboard: {{ error }}</p>
+          <p class="text-red-800 dark:text-red-400">Error loading dashboard: {{ error }}</p>
         </div>
         <button
           @click="loadDashboard"
-          class="mt-3 text-sm text-red-700 hover:text-red-900 underline"
+          class="mt-3 text-sm text-red-700 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 underline"
         >
           Try again
         </button>
@@ -42,20 +42,18 @@
       <!-- Dashboard Content -->
       <div v-else class="space-y-6">
         <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Total Items Card -->
-          <BaseCard
-            class="cursor-pointer hover:shadow-xl transition-shadow duration-200"
-          >
+          <BaseCard class="cursor-pointer group">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-gray-600">Total Items</p>
-                <p class="text-3xl font-bold text-gray-900 mt-2">
+                <p class="text-sm font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wide">Total Items</p>
+                <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-3 transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
                   {{ dashboardStats?.total_items || 0 }}
                 </p>
               </div>
-              <div class="p-3 bg-blue-100 rounded-full">
-                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="p-4 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
               </div>
@@ -64,26 +62,26 @@
 
           <!-- Low Stock Items Card -->
           <BaseCard
-            class="cursor-pointer hover:shadow-xl transition-shadow duration-200"
+            class="cursor-pointer group"
             @click="navigateToLowStock"
           >
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-gray-600">Low Stock Items</p>
-                <div class="flex items-center gap-2 mt-2">
-                  <p class="text-3xl font-bold text-gray-900">
+                <p class="text-sm font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wide">Low Stock</p>
+                <div class="flex items-center gap-2 mt-3">
+                  <p class="text-4xl font-extrabold text-gray-900 dark:text-white transition-colors group-hover:text-red-600 dark:group-hover:text-red-400">
                     {{ dashboardStats?.low_stock_count || 0 }}
                   </p>
                   <span
                     v-if="(dashboardStats?.low_stock_count || 0) > 0"
-                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800"
+                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-400 text-red-700 dark:text-black shadow-sm animate-pulse"
                   >
                     Alert
                   </span>
                 </div>
               </div>
-              <div class="p-3 bg-red-100 rounded-full">
-                <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="p-4 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
@@ -92,18 +90,18 @@
 
           <!-- Pending Requisitions Card -->
           <BaseCard
-            class="cursor-pointer hover:shadow-xl transition-shadow duration-200"
+            class="cursor-pointer group"
             @click="navigateToRequisitions"
           >
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-gray-600">Pending Requisitions</p>
-                <p class="text-3xl font-bold text-gray-900 mt-2">
+                <p class="text-sm font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wide">Pending Requests</p>
+                <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-3 transition-colors group-hover:text-yellow-600 dark:group-hover:text-yellow-400">
                   {{ dashboardStats?.pending_requisitions || 0 }}
                 </p>
               </div>
-              <div class="p-3 bg-yellow-100 rounded-full">
-                <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="p-4 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
@@ -111,16 +109,16 @@
           </BaseCard>
 
           <!-- Today's Movements Card -->
-          <BaseCard class="hover:shadow-xl transition-shadow duration-200">
+          <BaseCard class="group">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-gray-600">Today's Movements</p>
-                <p class="text-3xl font-bold text-gray-900 mt-2">
+                <p class="text-sm font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wide">Today's Activity</p>
+                <p class="text-4xl font-extrabold text-gray-900 dark:text-white mt-3 transition-colors group-hover:text-green-600 dark:group-hover:text-green-400">
                   {{ todayMovementsCount }}
                 </p>
               </div>
-              <div class="p-3 bg-green-100 rounded-full">
-                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="p-4 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
                 </svg>
               </div>
@@ -134,19 +132,22 @@
           subtitle="Items requiring immediate attention"
         >
           <div v-if="lowStockItemsLoading" class="space-y-3">
-            <div v-for="n in 5" :key="n" class="h-16 bg-gray-100 rounded animate-pulse"></div>
+            <div v-for="n in 5" :key="n" class="h-16 skeleton rounded-xl"></div>
           </div>
-          <div v-else-if="lowStockItems.length === 0" class="text-center py-8">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <p class="mt-2 text-gray-500">No low stock items at the moment</p>
+          <div v-else-if="lowStockItems.length === 0" class="text-center py-12">
+            <div class="inline-flex p-4 bg-green-100 rounded-full mb-4">
+              <svg class="h-12 w-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <p class="text-lg font-semibold text-gray-700">All stocked up!</p>
+            <p class="mt-1 text-gray-500">No low stock items at the moment</p>
           </div>
           <div v-else class="space-y-3">
             <div
               v-for="item in topLowStockItems"
               :key="item.id"
-              class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              class="flex items-center justify-between p-5 bg-gradient-to-r from-gray-50 to-white rounded-xl hover:from-blue-50 hover:to-white border border-gray-100 hover:border-blue-200 transition-all duration-300 cursor-pointer group"
             >
               <div class="flex-1">
                 <div class="flex items-center gap-3">
@@ -166,7 +167,7 @@
             <router-link
               v-if="lowStockItems.length > 5"
               to="/low-stock"
-              class="block text-center text-blue-600 hover:text-blue-800 font-medium py-2"
+              class="block text-center text-blue-600 hover:text-blue-800 font-semibold py-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors duration-200 group-hover:text-blue-700"
             >
               View all {{ lowStockItems.length }} low stock items →
             </router-link>

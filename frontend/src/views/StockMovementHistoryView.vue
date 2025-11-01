@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-900 p-4 md:p-6 lg:p-8">
     <div class="max-w-7xl mx-auto">
       <!-- Page Header -->
       <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 class="text-3xl font-bold text-gray-900">Stock Movements</h1>
-          <p class="text-gray-600 mt-1">History of all stock movements</p>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Stock Movements</h1>
+          <p class="text-gray-600 dark:text-gray-300 mt-1">History of all stock movements</p>
         </div>
         <div class="flex gap-2">
           <BaseButton
@@ -115,119 +115,111 @@
       </BaseCard>
 
       <!-- Movements Table -->
-      <BaseCard v-else>
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date/Time
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Item
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Type
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Quantity
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Reference
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Notes
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Stock After
-                </th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr
-                v-for="movement in paginatedMovements"
-                :key="movement.id"
-                class="hover:bg-gray-50 transition-colors"
-              >
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ formatDateTime(movement.date) }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">
-                    {{ movement.item_name || movement.item?.name || 'Unknown' }}
-                  </div>
-                  <div class="text-xs text-gray-500">
-                    {{ getItemCategory(movement) }}
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span
-                    class="px-2 py-1 text-xs font-medium rounded-full"
-                    :class="getMovementTypeBadgeClass(movement.movement_type)"
-                  >
-                    {{ getMovementTypeLabel(movement.movement_type) }}
-                  </span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span
-                    class="text-sm font-medium"
-                    :class="getQuantityClass(movement.movement_type)"
-                  >
-                    {{ getQuantityPrefix(movement.movement_type) }}{{ movement.quantity }}
-                    {{ getItemUnit(movement) }}
-                  </span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ movement.reference || '—' }}
-                </td>
-                <td class="px-6 py-4 text-sm text-gray-500">
-                  <div
-                    class="max-w-xs truncate"
-                    :title="movement.notes || ''"
-                  >
-                    {{ movement.notes || '—' }}
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {{ getRunningBalance(movement) }} {{ getItemUnit(movement) }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div class="flex items-center justify-end gap-2">
-                    <button
-                      @click="viewDetails(movement)"
-                      class="text-blue-600 hover:text-blue-900"
-                      title="View Details"
+      <div v-else class="hidden md:block">
+        <div class="bg-neutral-800 dark:bg-neutral-800 rounded-xl shadow-elegant overflow-hidden border border-neutral-700 dark:border-neutral-700">
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="min-w-full divide-y divide-neutral-700 dark:divide-neutral-700">
+              <thead class="bg-neutral-800 dark:bg-neutral-800 border-b-2 border-neutral-700 dark:border-neutral-700">
+                <tr>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    DATE
+                  </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    ITEM
+                  </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    TYPE
+                  </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    QTY
+                  </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    REF
+                  </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    STOCK AFTER
+                  </th>
+                  <th class="px-6 py-4 text-right text-xs font-bold text-white uppercase tracking-wider">
+                    ACTIONS
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-neutral-800 dark:bg-neutral-800 divide-y divide-neutral-700 dark:divide-neutral-700">
+                <tr
+                  v-for="movement in paginatedMovements"
+                  :key="movement.id"
+                  class="hover:bg-neutral-700/50 dark:hover:bg-neutral-700/50 transition-colors duration-150"
+                >
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <span class="text-sm text-gray-300 dark:text-gray-300">{{ formatDateTime(movement.date) }}</span>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <div class="text-sm font-semibold text-white dark:text-white">
+                      {{ movement.item_name || movement.item?.name || 'Unknown' }}
+                    </div>
+                    <div class="text-xs text-gray-400 dark:text-gray-400 mt-0.5">
+                      {{ getItemCategory(movement) }}
+                    </div>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <span
+                      class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full"
+                      :class="getMovementTypeBadgeClassDark(movement.movement_type)"
                     >
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                    </button>
-                    <button
-                      @click="confirmDelete(movement)"
-                      class="text-red-600 hover:text-red-900"
-                      title="Delete"
+                      {{ getMovementTypeLabel(movement.movement_type) }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <span
+                      class="text-sm font-medium"
+                      :class="getQuantityClassDark(movement.movement_type)"
                     >
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                      {{ getQuantityPrefix(movement.movement_type) }}{{ movement.quantity }}
+                      {{ getItemUnit(movement) }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <span class="text-sm text-gray-300 dark:text-gray-300">{{ movement.reference || '—' }}</span>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <span class="text-sm font-medium text-gray-300 dark:text-gray-300">
+                      {{ getRunningBalance(movement) }} {{ getItemUnit(movement) }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap text-right">
+                    <div class="flex items-center justify-end gap-2">
+                      <button
+                        @click="viewDetails(movement)"
+                        class="text-blue-500 dark:text-blue-400 hover:text-blue-400 dark:hover:text-blue-300 rounded-lg p-2 transition-colors duration-200"
+                        title="View Details"
+                      >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      </button>
+                      <button
+                        @click="confirmDelete(movement)"
+                        class="text-red-500 dark:text-red-400 hover:text-red-400 dark:hover:text-red-300 rounded-lg p-2 transition-colors duration-200"
+                        title="Delete"
+                      >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-        <!-- Pagination -->
-        <div
-          v-if="totalPages > 1"
-          class="px-6 py-4 border-t border-gray-200 flex items-center justify-between"
-        >
-          <div class="text-sm text-gray-700">
+          <!-- Pagination -->
+          <div
+            v-if="totalPages > 1"
+            class="px-6 py-4 border-t border-neutral-700 dark:border-neutral-700 flex items-center justify-between bg-neutral-800 dark:bg-neutral-800"
+          >
+          <div class="text-sm text-gray-300 dark:text-gray-300">
             Showing {{ startIndex + 1 }} to {{ endIndex }} of {{ filteredMovements.length }} movements
           </div>
           <div class="flex gap-2">
@@ -238,7 +230,7 @@
             >
               Previous
             </BaseButton>
-            <span class="px-4 py-2 text-sm text-gray-700">
+            <span class="px-4 py-2 text-sm text-gray-300 dark:text-gray-300">
               Page {{ currentPage }} of {{ totalPages }}
             </span>
             <BaseButton
@@ -540,6 +532,15 @@ const getMovementTypeBadgeClass = (type) => {
   return classes[type] || 'bg-gray-100 text-gray-800'
 }
 
+const getMovementTypeBadgeClassDark = (type) => {
+  const classes = {
+    receipt: 'bg-green-400 dark:bg-green-400 text-black dark:text-black',
+    issue: 'bg-blue-400 dark:bg-blue-400 text-black dark:text-black',
+    writeoff: 'bg-red-400 dark:bg-red-400 text-black dark:text-black'
+  }
+  return classes[type] || 'bg-gray-400 dark:bg-gray-400 text-black dark:text-black'
+}
+
 const getQuantityPrefix = (type) => {
   if (type === 'receipt') return '+'
   if (['issue', 'writeoff'].includes(type)) return '-'
@@ -550,6 +551,12 @@ const getQuantityClass = (type) => {
   if (type === 'receipt') return 'text-green-600'
   if (['issue', 'writeoff'].includes(type)) return 'text-red-600'
   return 'text-gray-600'
+}
+
+const getQuantityClassDark = (type) => {
+  if (type === 'receipt') return 'text-green-400 dark:text-green-400'
+  if (['issue', 'writeoff'].includes(type)) return 'text-red-400 dark:text-red-400'
+  return 'text-gray-300 dark:text-gray-300'
 }
 
 const getItemUnit = (movement) => {

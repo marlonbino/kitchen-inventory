@@ -14,7 +14,7 @@ app.use(createPinia())
 // Configure Vue Router
 app.use(router)
 
-// Configure Toast notifications
+// Configure Toast notifications with dark mode support
 app.use(Toast, {
   transition: 'Vue-Toastification__bounce',
   maxToasts: 20,
@@ -30,7 +30,10 @@ app.use(Toast, {
   hideProgressBar: false,
   closeButton: 'button',
   icon: true,
-  rtl: false
+  rtl: false,
+  // Dark mode classes
+  toastClassName: 'toast-custom',
+  containerClassName: 'toast-container-custom'
 })
 
 app.mount('#app')

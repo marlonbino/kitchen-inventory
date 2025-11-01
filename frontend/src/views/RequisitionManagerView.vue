@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-900 p-4 md:p-6 lg:p-8">
     <div class="max-w-7xl mx-auto">
       <!-- Page Header -->
       <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 class="text-3xl font-bold text-gray-900">Requisitions</h1>
-          <p class="text-gray-600 mt-1">Manage item requisition requests</p>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Requisitions</h1>
+          <p class="text-gray-600 dark:text-gray-300 mt-1">Manage item requisition requests</p>
         </div>
         <div class="flex gap-2">
           <BaseButton
@@ -173,143 +173,141 @@
       </BaseCard>
 
       <!-- Requisitions Table -->
-      <BaseCard v-else>
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th v-if="activeTab === 'pending'" class="px-6 py-3 text-left">
-                  <input
-                    type="checkbox"
-                    :checked="allSelected"
-                    @change="toggleSelectAll"
-                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                  @click="sortBy('date_requested')"
+      <div v-else class="hidden md:block">
+        <div class="bg-neutral-800 dark:bg-neutral-800 rounded-xl shadow-elegant overflow-hidden border border-neutral-700 dark:border-neutral-700">
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="min-w-full divide-y divide-neutral-700 dark:divide-neutral-700">
+              <thead class="bg-neutral-800 dark:bg-neutral-800 border-b-2 border-neutral-700 dark:border-neutral-700">
+                <tr>
+                  <th v-if="activeTab === 'pending'" class="px-6 py-4 text-left">
+                    <input
+                      type="checkbox"
+                      :checked="allSelected"
+                      @change="toggleSelectAll"
+                      class="rounded border-neutral-600 bg-neutral-800 text-blue-500 focus:ring-blue-500 focus:ring-offset-neutral-800 w-4 h-4"
+                    />
+                  </th>
+                  <th
+                    class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-neutral-700 dark:hover:bg-neutral-700 transition-colors"
+                    @click="sortBy('date_requested')"
+                  >
+                    <div class="flex items-center gap-2">
+                      DATE
+                      <svg v-if="sortField === 'date_requested'" class="w-4 h-4 text-blue-500 dark:text-blue-400" :class="sortDirection === 'asc' ? '' : 'transform rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                      </svg>
+                    </div>
+                  </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    ITEM
+                  </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    QTY
+                  </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    REQUESTED BY
+                  </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    STATUS
+                  </th>
+                  <th class="px-6 py-4 text-right text-xs font-bold text-white uppercase tracking-wider">
+                    ACTIONS
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-neutral-800 dark:bg-neutral-800 divide-y divide-neutral-700 dark:divide-neutral-700">
+                <tr
+                  v-for="req in sortedRequisitions"
+                  :key="req.id"
+                  class="hover:bg-neutral-700/50 dark:hover:bg-neutral-700/50 transition-colors duration-150"
                 >
-                  <div class="flex items-center gap-2">
-                    Date Requested
-                    <svg v-if="sortField === 'date_requested'" class="w-4 h-4" :class="sortDirection === 'asc' ? '' : 'transform rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
-                    </svg>
-                  </div>
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Item
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Quantity Requested
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Requested By
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date Processed
-                </th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr
-                v-for="req in sortedRequisitions"
-                :key="req.id"
-                :class="[
-                  'hover:bg-gray-50 transition-colors',
-                  isUrgent(req) ? 'bg-red-50' : ''
-                ]"
-              >
-                <td v-if="activeTab === 'pending'" class="px-6 py-4 whitespace-nowrap">
-                  <input
-                    type="checkbox"
-                    :checked="selectedRequisitions.includes(req.id)"
-                    @change="toggleSelection(req.id)"
-                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ formatDate(req.date_requested) }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex items-center gap-2">
-                    <div>
-                      <div class="text-sm font-medium text-gray-900">
+                  <td v-if="activeTab === 'pending'" class="px-6 py-5 whitespace-nowrap">
+                    <input
+                      type="checkbox"
+                      :checked="selectedRequisitions.includes(req.id)"
+                      @change="toggleSelection(req.id)"
+                      class="rounded border-neutral-600 bg-neutral-800 text-blue-500 focus:ring-blue-500 focus:ring-offset-neutral-800 w-4 h-4"
+                    />
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <span class="text-sm text-gray-300 dark:text-gray-300">{{ formatDate(req.date_requested) }}</span>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <div class="flex items-center gap-2">
+                      <div class="text-sm font-semibold text-white dark:text-white">
                         {{ req.item_name || req.item?.name || 'Unknown' }}
                       </div>
-                      <div class="text-xs text-gray-500">
-                        <StockBadge
-                          :current="getItemStock(req)"
-                          :minimum="getItemMinStock(req)"
-                          :show-percentage="false"
-                        />
-                      </div>
+                      <span v-if="isUrgent(req)" class="px-2 py-0.5 text-xs font-bold bg-red-400 dark:bg-red-400 text-black dark:text-black rounded-full">
+                        URGENT
+                      </span>
                     </div>
-                    <span v-if="isUrgent(req)" class="px-2 py-0.5 text-xs font-medium bg-red-100 text-red-800 rounded">
-                      URGENT
+                    <div class="mt-1">
+                      <StockBadge
+                        :current="getItemStock(req)"
+                        :minimum="getItemMinStock(req)"
+                        :show-percentage="false"
+                      />
+                    </div>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <span class="text-sm text-gray-300 dark:text-gray-300 font-medium">
+                      {{ req.quantity_requested }} {{ getItemUnit(req) }}
                     </span>
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                  {{ req.quantity_requested }} {{ getItemUnit(req) }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ req.requested_by }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span
-                    class="px-2 py-1 text-xs font-medium rounded-full"
-                    :class="getStatusBadgeClass(req.status)"
-                  >
-                    {{ getStatusLabel(req.status) }}
-                  </span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ req.date_processed ? formatDate(req.date_processed) : '—' }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div class="flex items-center justify-end gap-2">
-                    <template v-if="req.status === 'pending'">
-                      <BaseButton
-                        variant="primary"
-                        @click="confirmApprove(req)"
-                        :disabled="actionLoading"
-                        class="text-xs px-2 py-1"
-                      >
-                        Approve
-                      </BaseButton>
-                      <BaseButton
-                        variant="danger"
-                        @click="confirmReject(req)"
-                        :disabled="actionLoading"
-                        class="text-xs px-2 py-1"
-                      >
-                        Reject
-                      </BaseButton>
-                    </template>
-                    <button
-                      v-else
-                      @click="viewDetails(req)"
-                      class="text-blue-600 hover:text-blue-900"
-                      title="View Details"
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <span class="text-sm text-gray-300 dark:text-gray-300">{{ req.requested_by }}</span>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <span
+                      class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full"
+                      :class="getStatusBadgeClassDark(req.status)"
                     >
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                      {{ getStatusLabel(req.status) }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap text-right">
+                    <div class="flex items-center justify-end gap-2">
+                      <template v-if="req.status === 'pending'">
+                        <button
+                          @click="confirmApprove(req)"
+                          :disabled="actionLoading"
+                          class="text-green-500 dark:text-green-400 hover:text-green-400 dark:hover:text-green-300 rounded-lg p-2 transition-colors duration-200"
+                          title="Approve"
+                        >
+                          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </button>
+                        <button
+                          @click="confirmReject(req)"
+                          :disabled="actionLoading"
+                          class="text-red-500 dark:text-red-400 hover:text-red-400 dark:hover:text-red-300 rounded-lg p-2 transition-colors duration-200"
+                          title="Reject"
+                        >
+                          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </template>
+                      <button
+                        v-else
+                        @click="viewDetails(req)"
+                        class="text-blue-500 dark:text-blue-400 hover:text-blue-400 dark:hover:text-blue-300 rounded-lg p-2 transition-colors duration-200"
+                        title="View Details"
+                      >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </BaseCard>
+      </div>
 
       <!-- Create Requisition Modal -->
       <BaseModal :show="showCreateModal" title="Create Requisition" @close="closeCreateModal">
@@ -592,6 +590,15 @@ const getStatusBadgeClass = (status) => {
     rejected: 'bg-red-100 text-red-800'
   }
   return classes[status] || 'bg-gray-100 text-gray-800'
+}
+
+const getStatusBadgeClassDark = (status) => {
+  const classes = {
+    pending: 'bg-yellow-400 dark:bg-yellow-400 text-black dark:text-black',
+    approved: 'bg-green-400 dark:bg-green-400 text-black dark:text-black',
+    rejected: 'bg-red-400 dark:bg-red-400 text-black dark:text-black'
+  }
+  return classes[status] || 'bg-gray-400 dark:bg-gray-400 text-black dark:text-black'
 }
 
 const getItemStock = (req) => {

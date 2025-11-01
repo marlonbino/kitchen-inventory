@@ -1,37 +1,28 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white shadow-md">
-      <NavBar />
-    </header>
-
-    <!-- Main Content -->
-    <main class="flex-1">
-      <router-view v-slot="{ Component, route }">
-        <transition
-          name="fade"
-          mode="out-in"
-        >
-          <component :is="Component" :key="route.path" />
-        </transition>
-      </router-view>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 mt-auto">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex flex-col md:flex-row justify-between items-center">
-          <div class="text-sm text-gray-600 mb-2 md:mb-0">
-            © {{ currentYear }} Kitchen Inventory System. All rights reserved.
-          </div>
-          <div class="flex space-x-4 text-sm text-gray-600">
-            <a href="#" class="hover:text-blue-600 transition-colors">Documentation</a>
-            <a href="#" class="hover:text-blue-600 transition-colors">Support</a>
-            <span class="text-gray-400">v1.0.0</span>
-          </div>
-        </div>
+  <div class="min-h-screen flex flex-col bg-gray-50 dark:bg-neutral-900">
+    <!-- Sidebar + Main Layout -->
+    <div class="flex flex-1 overflow-hidden">
+      <!-- Sidebar -->
+      <Sidebar :is-mobile-open="isMobileSidebarOpen" @close-mobile="isMobileSidebarOpen = false" />
+      
+      <!-- Main Content Area -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Top Header -->
+        <TopHeader @toggle-mobile-sidebar="isMobileSidebarOpen = !isMobileSidebarOpen" />
+        
+        <!-- Page Content -->
+        <main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-neutral-900">
+          <router-view v-slot="{ Component, route }">
+            <transition
+              name="fade-slide"
+              mode="out-in"
+            >
+              <component :is="Component" :key="route.path" />
+            </transition>
+          </router-view>
+        </main>
       </div>
-    </footer>
+    </div>
 
     <!-- Global Loading Overlay -->
     <LoadingSpinner
@@ -43,14 +34,17 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useInventoryStore } from './stores/inventory'
-import NavBar from './components/NavBar.vue'
+import { useTheme } from './composables/useTheme'
+import Sidebar from './components/Sidebar.vue'
+import TopHeader from './components/TopHeader.vue'
 import LoadingSpinner from './components/LoadingSpinner.vue'
 
 const store = useInventoryStore()
+const { initTheme } = useTheme()
 
-const currentYear = new Date().getFullYear()
+const isMobileSidebarOpen = ref(false)
 
 // Check if any store is loading
 const isLoading = computed(() => {
@@ -65,6 +59,9 @@ const isLoading = computed(() => {
 
 // Load initial data
 onMounted(async () => {
+  // Initialize theme
+  initTheme()
+  
   try {
     // Load items and low stock items in parallel
     await Promise.all([
@@ -79,15 +76,20 @@ onMounted(async () => {
 </script>
 
 <style>
-/* Fade transition for route changes */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
+/* Enhanced fade-slide transition for route changes */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.fade-slide-enter-from {
   opacity: 0;
+  transform: translateY(20px);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
 }
 
 /* Smooth scrolling */
@@ -95,22 +97,44 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar */
+/* Professional custom scrollbar - Light mode */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #f8fafc;
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
+  background: linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
+  border-radius: 5px;
+  transition: all 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: #262626;
+  border-radius: 5px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #525252 0%, #404040 100%);
+  border-radius: 5px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #6b6b6b 0%, #525252 100%);
+}
+
+/* Prevent layout shift on transition */
+main {
+  position: relative;
 }
 </style>
