@@ -1,0 +1,133 @@
+[
+  {
+    "model": "inventory.item",
+    "pk": 1,
+    "fields": {
+      "name": "Tomatoes",
+      "category": "Produce",
+      "unit": "kg",
+      "min_stock_level": 10,
+      "current_stock": 25,
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 2,
+    "fields": {
+      "name": "Milk",
+      "category": "Dairy",
+      "unit": "bottle",
+      "min_stock_level": 20,
+      "current_stock": 35,
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 3,
+    "fields": {
+      "name": "Rice",
+      "category": "Pantry",
+      "unit": "kg",
+      "min_stock_level": 50,
+      "current_stock": 75,
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 4,
+    "fields": {
+      "name": "Chicken Breast",
+      "category": "Meat",
+      "unit": "kg",
+      "min_stock_level": 15,
+      "current_stock": 8,
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 5,
+    "fields": {
+      "name": "Black Pepper",
+      "category": "Spices",
+      "unit": "g",
+      "min_stock_level": 500,
+      "current_stock": 250,
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 6,
+    "fields": {
+      "name": "Frozen Peas",
+      "category": "Frozen",
+      "unit": "pack",
+      "min_stock_level": 30,
+      "current_stock": 45,
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 7,
+    "fields": {
+      "name": "Eggs",
+      "category": "Dairy",
+      "unit": "piece",
+      "min_stock_level": 60,
+      "current_stock": 120,
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 8,
+    "fields": {
+      "name": "Olive Oil",
+      "category": "Pantry",
+      "unit": "bottle",
+      "min_stock_level": 12,
+      "current_stock": 18,
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 9,
+    "fields": {
+      "name": "Garlic",
+      "category": "Produce",
+      "unit": "kg",
+      "min_stock_level": 5,
+      "current_stock": 3,
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    }
+  },
+  {
+    "model": "inventory.item",
+    "pk": 10,
+    "fields": {
+      "name": "Salt",
+      "category": "Spices",
+      "unit": "kg",
+      "min_stock_level": 20,
+      "current_stock": 35,
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T10:00:00Z"
+    }
+  }
+]
+
