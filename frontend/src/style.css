@@ -16,7 +16,21 @@
 
   body {
     @apply antialiased;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+  }
+
+  /* Slightly smaller base font on mobile for better fit */
+  @media (max-width: 640px) {
+    html {
+      font-size: 14px;
+    }
+  }
+
+  @media (min-width: 640px) {
+    html {
+      font-size: 16px;
+    }
   }
 
   /* Smooth focus rings */
@@ -26,6 +40,11 @@
 }
 
 @layer components {
+  /* Touch optimization for mobile */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+
   /* Professional shadows */
   .shadow-elegant {
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
@@ -85,6 +104,113 @@
   /* Badge animations */
   .badge-pulse {
     animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Circular Badge with Glow */
+  .circular-badge {
+    @apply relative flex flex-col items-center justify-center;
+    width: 100px;
+    height: 100px;
+    min-width: 100px;
+    min-height: 100px;
+    border-radius: 50%;
+    background: #262626;
+    border: 3px solid;
+    position: relative;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 640px) {
+    .circular-badge {
+      width: 140px;
+      height: 140px;
+      min-width: 140px;
+      min-height: 140px;
+    }
+  }
+
+  .circular-badge-blue {
+    border-color: #3B82F6;
+    box-shadow: 
+      0 0 20px rgba(59, 130, 246, 0.5),
+      0 0 40px rgba(59, 130, 246, 0.3),
+      inset 0 0 20px rgba(59, 130, 246, 0.1);
+  }
+
+  .circular-badge-blue:hover {
+    box-shadow: 
+      0 0 30px rgba(59, 130, 246, 0.7),
+      0 0 60px rgba(59, 130, 246, 0.5),
+      inset 0 0 20px rgba(59, 130, 246, 0.2);
+    transform: scale(1.05);
+  }
+
+  .circular-badge-red {
+    border-color: #F87171;
+    box-shadow: 
+      0 0 20px rgba(248, 113, 113, 0.5),
+      0 0 40px rgba(248, 113, 113, 0.3),
+      inset 0 0 20px rgba(248, 113, 113, 0.1);
+  }
+
+  .circular-badge-red:hover {
+    box-shadow: 
+      0 0 30px rgba(248, 113, 113, 0.7),
+      0 0 60px rgba(248, 113, 113, 0.5),
+      inset 0 0 20px rgba(248, 113, 113, 0.2);
+    transform: scale(1.05);
+  }
+
+  .circular-badge-yellow {
+    border-color: #FBBF24;
+    box-shadow: 
+      0 0 20px rgba(251, 191, 36, 0.5),
+      0 0 40px rgba(251, 191, 36, 0.3),
+      inset 0 0 20px rgba(251, 191, 36, 0.1);
+  }
+
+  .circular-badge-yellow:hover {
+    box-shadow: 
+      0 0 30px rgba(251, 191, 36, 0.7),
+      0 0 60px rgba(251, 191, 36, 0.5),
+      inset 0 0 20px rgba(251, 191, 36, 0.2);
+    transform: scale(1.05);
+  }
+
+  .circular-badge-green {
+    border-color: #34D399;
+    box-shadow: 
+      0 0 20px rgba(52, 211, 153, 0.5),
+      0 0 40px rgba(52, 211, 153, 0.3),
+      inset 0 0 20px rgba(52, 211, 153, 0.1);
+  }
+
+  .circular-badge-green:hover {
+    box-shadow: 
+      0 0 30px rgba(52, 211, 153, 0.7),
+      0 0 60px rgba(52, 211, 153, 0.5),
+      inset 0 0 20px rgba(52, 211, 153, 0.2);
+    transform: scale(1.05);
+  }
+
+  .circular-badge-number {
+    @apply text-white font-bold;
+    font-size: 2rem;
+    line-height: 1;
+    margin-top: -8px;
+  }
+
+  @media (min-width: 640px) {
+    .circular-badge-number {
+      font-size: 3rem;
+    }
+  }
+
+  .circular-badge-icon {
+    @apply mt-2;
+    width: 24px;
+    height: 24px;
   }
 }
 

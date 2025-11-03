@@ -1,10 +1,10 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
-    <div class="max-w-7xl mx-auto">
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-900 p-3 sm:p-4 md:p-6 lg:p-8 w-full max-w-full overflow-x-hidden">
+    <div class="max-w-7xl mx-auto w-full">
       <!-- Page Header -->
       <div class="mb-6">
-        <h1 class="text-3xl font-bold text-gray-900">Low Stock Alerts</h1>
-        <p class="text-gray-600 mt-1">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Running Low</h1>
+        <p class="text-gray-600 dark:text-gray-300 mt-1">
           {{ summaryText }}
         </p>
       </div>
@@ -12,17 +12,17 @@
       <!-- Critical Alert Banner -->
       <div
         v-if="criticalItems.length > 0"
-        class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg animate-pulse"
+        class="mb-6 p-4 bg-red-100 dark:bg-red-900/20 border-l-4 border-red-500 dark:border-red-400 rounded-r-lg animate-pulse"
       >
         <div class="flex items-center">
-          <svg class="w-6 h-6 text-red-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6 text-red-600 dark:text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           <div class="flex-1">
-            <h3 class="text-lg font-semibold text-red-800">
+            <h3 class="text-lg font-semibold text-red-800 dark:text-red-400">
               Critical Alert: {{ criticalItems.length }} item(s) are out of stock!
             </h3>
-            <p class="text-sm text-red-700 mt-1">
+            <p class="text-sm text-red-700 dark:text-red-300 mt-1">
               Immediate action required. These items need urgent restocking.
             </p>
           </div>
@@ -59,16 +59,16 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <!-- Search -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-white mb-1">Search</label>
             <div class="relative">
               <input
                 v-model="searchQuery"
                 type="text"
                 placeholder="Search by item name..."
-                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
               />
               <svg
-                class="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+                class="absolute left-3 top-2.5 h-5 w-5 text-gray-400 dark:text-gray-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -80,10 +80,10 @@
 
           <!-- Category Filter -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-white mb-1">Category</label>
             <select
               v-model="selectedCategory"
-              class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+              class="block w-full px-3 py-2 border border-gray-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white"
             >
               <option value="">All Categories</option>
               <option v-for="category in categories" :key="category" :value="category">
@@ -94,10 +94,10 @@
 
           <!-- Sort -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-white mb-1">Sort By</label>
             <select
               v-model="sortBy"
-              class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+              class="block w-full px-3 py-2 border border-gray-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white"
             >
               <option value="critical">Most Critical</option>
               <option value="shortage">By Shortage Amount</option>
@@ -106,36 +106,22 @@
             </select>
           </div>
         </div>
-
-        <!-- Toggle Pending Requisitions -->
-        <div class="mt-4 flex items-center">
-          <input
-            id="hide-pending"
-            v-model="hideItemsWithPendingRequisitions"
-            type="checkbox"
-            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-          />
-          <label for="hide-pending" class="ml-2 text-sm text-gray-700">
-            Hide items with pending requisitions
-          </label>
-        </div>
       </BaseCard>
 
       <!-- Loading State -->
-      <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div v-for="n in 6" :key="n" class="bg-white rounded-lg shadow-md p-6 animate-pulse">
-          <div class="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
-          <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+      <div v-if="loading" class="bg-gradient-to-br from-neutral-800 to-neutral-900 dark:from-neutral-800 dark:to-neutral-900 rounded-2xl border border-neutral-700 shadow-lg overflow-hidden">
+        <div class="p-6 space-y-3">
+          <div v-for="n in 6" :key="n" class="h-16 bg-neutral-700/50 dark:bg-neutral-700/50 rounded animate-pulse"></div>
         </div>
       </div>
 
       <!-- Error State -->
       <BaseCard v-else-if="error">
         <div class="text-center py-8">
-          <svg class="mx-auto h-12 w-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="mx-auto h-12 w-12 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <p class="mt-2 text-red-600">{{ error }}</p>
+          <p class="mt-2 text-red-600 dark:text-red-400">{{ error }}</p>
           <BaseButton variant="primary" @click="loadLowStock" class="mt-4">
             Try Again
           </BaseButton>
@@ -145,107 +131,184 @@
       <!-- Empty State -->
       <BaseCard v-else-if="filteredItems.length === 0">
         <div class="text-center py-12">
-          <svg class="mx-auto h-16 w-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="inline-flex p-4 bg-green-400 dark:bg-green-400 rounded-full mb-4">
+            <svg class="h-16 w-16 text-black dark:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <h3 class="mt-4 text-xl font-semibold text-gray-900">All Good!</h3>
-          <p class="mt-2 text-gray-600">
+          </div>
+          <h3 class="mt-4 text-xl font-semibold text-gray-900 dark:text-white">All Good!</h3>
+          <p class="mt-2 text-gray-600 dark:text-gray-300">
             No items are currently low on stock. Great job managing your inventory!
           </p>
         </div>
       </BaseCard>
 
-      <!-- Low Stock Items Grid -->
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <BaseCard
+      <!-- Low Stock Items Table -->
+      <div v-else class="hidden md:block">
+        <div class="bg-gradient-to-br from-neutral-800 to-neutral-900 dark:from-neutral-800 dark:to-neutral-900 rounded-2xl border border-neutral-700 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden">
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="min-w-full">
+              <thead class="bg-neutral-800/50 dark:bg-neutral-800/50">
+                <tr>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    NAME
+                  </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    CATEGORY
+                  </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    CURRENT STOCK
+                  </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    MINIMUM
+                  </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    SHORTAGE
+                  </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    STATUS
+                  </th>
+                  <th class="px-6 py-4 text-right text-xs font-bold text-white uppercase tracking-wider">
+                    ACTIONS
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="item in sortedAndFilteredItems"
+                  :key="item.id"
+                  class="hover:bg-neutral-700/50 dark:hover:bg-neutral-700/50 transition-all duration-200"
+                >
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <div class="text-sm font-semibold text-white dark:text-white">{{ item.name }}</div>
+                    <div v-if="isCritical(item)" class="mt-1">
+                      <span class="inline-flex items-center px-2 py-1 text-xs font-bold bg-red-400 dark:bg-red-400 text-black dark:text-black rounded-full animate-pulse">
+                        CRITICAL
+                      </span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <span class="px-3 py-1.5 text-xs font-medium bg-neutral-700 dark:bg-neutral-700 text-gray-300 dark:text-gray-300 rounded-full">
+                      {{ item.category_name }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <StockBadge
+                      :current="item.current_stock"
+                      :minimum="item.min_stock_level"
+                      :show-percentage="false"
+                    />
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <span class="text-sm text-gray-300 dark:text-gray-300">{{ item.min_stock_level }} {{ item.unit }}</span>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <span class="text-sm font-semibold text-red-400 dark:text-red-400">
+                      {{ item.shortage_amount || (item.min_stock_level - item.current_stock) }} {{ item.unit }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <span
+                      v-if="isCritical(item)"
+                      class="inline-flex items-center px-3 py-1.5 text-xs font-bold bg-red-400 dark:bg-red-400 text-black dark:text-black rounded-full"
+                    >
+                      <span class="w-2 h-2 bg-black dark:bg-black rounded-full mr-2"></span>
+                      Out of Stock
+                    </span>
+                    <span
+                      v-else
+                      class="inline-flex items-center px-3 py-1.5 text-xs font-bold bg-yellow-400 dark:bg-yellow-400 text-black dark:text-black rounded-full"
+                    >
+                      <span class="w-2 h-2 bg-black dark:bg-black rounded-full mr-2"></span>
+                      Low Stock
+                    </span>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap text-right">
+                    <div class="flex items-center justify-end gap-2">
+                      <button
+                        @click="openRequisitionModal(item)"
+                        class="text-blue-500 dark:text-blue-400 hover:text-blue-400 dark:hover:text-blue-300 rounded-lg p-2 transition-colors duration-200"
+                        title="Create Requisition"
+                      >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </button>
+                      <button
+                        @click="openReceiptModal(item)"
+                        class="text-green-500 dark:text-green-400 hover:text-green-400 dark:hover:text-green-300 rounded-lg p-2 transition-colors duration-200"
+                        title="Quick Receipt"
+                      >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Card View -->
+      <div v-if="!loading && !error && filteredItems.length > 0" class="md:hidden space-y-4">
+        <div
           v-for="item in sortedAndFilteredItems"
           :key="item.id"
-          :class="[
-            'hover:shadow-xl transition-all duration-200',
-            getItemPriorityClass(item)
-          ]"
+          class="bg-gradient-to-br from-neutral-800 to-neutral-900 dark:from-neutral-800 dark:to-neutral-900 rounded-2xl p-4 border border-neutral-700 shadow-lg hover:shadow-2xl transition-all duration-300"
         >
-          <!-- Item Header -->
-          <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center justify-between mb-2">
             <div class="flex-1">
-              <h3 class="text-lg font-semibold text-gray-900">{{ item.name }}</h3>
-              <div class="flex items-center gap-2 mt-1">
-                <span class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded">
-                  {{ item.category }}
-                </span>
-                <span
-                  v-if="isCritical(item)"
-                  class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full animate-pulse"
-                >
+              <h4 class="font-semibold text-white dark:text-white">{{ item.name }}</h4>
+              <div v-if="isCritical(item)" class="mt-1">
+                <span class="inline-flex items-center px-2 py-1 text-xs font-bold bg-red-400 dark:bg-red-400 text-black dark:text-black rounded-full">
                   CRITICAL
                 </span>
               </div>
             </div>
-            <div class="text-right">
               <StockBadge
                 :current="item.current_stock"
                 :minimum="item.min_stock_level"
-                :show-percentage="true"
+              :show-percentage="false"
               />
-            </div>
           </div>
-
-          <!-- Stock Progress Bar -->
-          <div class="mb-4">
-            <div class="flex justify-between text-xs text-gray-600 mb-1">
-              <span>Stock Level</span>
-              <span>{{ Math.round((item.current_stock / item.min_stock_level) * 100) }}%</span>
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-gray-300 dark:text-gray-300">Category:</span>
+              <span class="px-2 py-1 text-xs font-medium bg-neutral-700 dark:bg-neutral-700 text-gray-300 dark:text-gray-300 rounded-full">
+                {{ item.category_name }}
+              </span>
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-              <div
-                class="h-full rounded-full transition-all duration-500"
-                :class="getProgressBarColor(item)"
-                :style="{ width: `${Math.min(100, (item.current_stock / item.min_stock_level) * 100)}%` }"
-              ></div>
+            <div class="flex items-center justify-between">
+              <span class="text-gray-300 dark:text-gray-300">Minimum:</span>
+              <span class="text-white dark:text-white">{{ item.min_stock_level }} {{ item.unit }}</span>
             </div>
-          </div>
-
-          <!-- Stock Details -->
-          <div class="grid grid-cols-2 gap-3 mb-4 text-sm">
-            <div>
-              <span class="text-gray-500">Current:</span>
-              <span class="ml-2 font-medium text-gray-900">{{ item.current_stock }} {{ item.unit }}</span>
-            </div>
-            <div>
-              <span class="text-gray-500">Minimum:</span>
-              <span class="ml-2 font-medium text-gray-900">{{ item.min_stock_level }} {{ item.unit }}</span>
-            </div>
-            <div class="col-span-2">
-              <span class="text-gray-500">Shortage:</span>
-              <span class="ml-2 font-semibold text-red-600">
+            <div class="flex items-center justify-between">
+              <span class="text-gray-300 dark:text-gray-300">Shortage:</span>
+              <span class="font-semibold text-red-400 dark:text-red-400">
                 {{ item.shortage_amount || (item.min_stock_level - item.current_stock) }} {{ item.unit }}
               </span>
             </div>
           </div>
-
-          <!-- Last Movement Date -->
-          <div v-if="getLastMovementDate(item)" class="mb-4 text-xs text-gray-500">
-            Last movement: {{ formatRelativeDate(getLastMovementDate(item)) }}
-          </div>
-
-          <!-- Quick Actions -->
-          <div class="flex gap-2 pt-4 border-t">
+          <div class="flex gap-2 mt-4 pt-4 border-t border-neutral-700 dark:border-neutral-700">
             <BaseButton
               variant="primary"
               @click="openRequisitionModal(item)"
               class="flex-1 text-sm py-2"
             >
-              Create Requisition
+              Requisition
             </BaseButton>
             <BaseButton
               variant="secondary"
               @click="openReceiptModal(item)"
               class="flex-1 text-sm py-2"
             >
-              Quick Receipt
+              Receipt
             </BaseButton>
           </div>
-        </BaseCard>
+        </div>
       </div>
 
       <!-- Create Requisition Modal -->
@@ -324,7 +387,6 @@ const error = ref(null)
 const searchQuery = ref('')
 const selectedCategory = ref('')
 const sortBy = ref('critical')
-const hideItemsWithPendingRequisitions = ref(false)
 const refreshInterval = ref(null)
 const requisitionLoading = ref(false)
 const receiptLoading = ref(false)
@@ -353,7 +415,7 @@ const criticalItems = computed(() => {
 })
 
 const categories = computed(() => {
-  const cats = new Set(lowStockItems.value.map(item => item.category))
+  const cats = new Set(lowStockItems.value.map(item => item.category_name))
   return Array.from(cats).sort()
 })
 
@@ -366,19 +428,18 @@ const filteredItems = computed(() => {
     result = result.filter(item => item.name.toLowerCase().includes(query))
   }
 
-  // Category filter
+  // Category filter (by name)
   if (selectedCategory.value) {
-    result = result.filter(item => item.category === selectedCategory.value)
+    result = result.filter(item => item.category_name === selectedCategory.value)
   }
 
-  // Hide items with pending requisitions
-  if (hideItemsWithPendingRequisitions.value) {
-    result = result.filter(item => {
-      return !requisitions.value.some(req =>
-        req.item_id === item.id && req.status === 'pending'
-      )
-    })
-  }
+  // Hide items with pending requisitions (automatically enabled)
+  result = result.filter(item => {
+    return !requisitions.value.some(req =>
+      (req.item_id === item.id || req.item?.id === item.id) && 
+      (req.status === 'pending' || req.status === 'awaiting_delivery')
+    )
+  })
 
   return result
 })
@@ -601,7 +662,7 @@ const exportToCSV = () => {
 
     return [
       item.name,
-      item.category,
+      item.category_name,
       item.current_stock,
       item.min_stock_level,
       shortage,
@@ -652,6 +713,18 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* Remove all table borders */
+table {
+  border-collapse: collapse;
+}
+
+tbody tr {
+  border: none !important;
+}
+
+tbody td {
+  border: none !important;
+}
 @page {
   margin: 1cm;
 }

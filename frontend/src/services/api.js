@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with base URL
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -50,6 +50,28 @@ const parseApiError = (error) => {
 };
 
 
+// Add credentials to requests for session authentication
+apiClient.defaults.withCredentials = true;
+
+// Helper function to get auth token from localStorage
+const getAuthToken = () => {
+  return localStorage.getItem('auth_token');
+};
+
+// Request interceptor to add auth token
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = getAuthToken();
+    if (token) {
+      config.headers['Authorization'] = `Token ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Response interceptor for error handling
 apiClient.interceptors.response.use(
   (response) => response,
@@ -58,6 +80,119 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// ==================== AUTH API ====================
+
+/**
+ * Register a new user
+ * @param {Object} data - Registration data (username, password, email)
+ * @returns {Promise} User data
+ */
+export const register = async (data) => {
+  const response = await apiClient.post('/auth/register/', data);
+  return response.data;
+};
+
+/**
+ * Login a user
+ * @param {Object} data - Login data (username, password)
+ * @returns {Promise} User data
+ */
+export const login = async (data) => {
+  const response = await apiClient.post('/auth/login/', data);
+  return response.data;
+};
+
+/**
+ * Logout the current user
+ * @returns {Promise} Success message
+ */
+export const logout = async () => {
+  const response = await apiClient.post('/auth/logout/');
+  return response.data;
+};
+
+// ==================== ADMIN USER MANAGEMENT API ====================
+
+/**
+ * Get list of all users (Admin only)
+ * @returns {Promise} List of users
+ */
+export const getUsers = async () => {
+  const response = await apiClient.get('/admin/users/');
+  return response.data;
+};
+
+/**
+ * Create a new user (Admin only)
+ * @param {Object} data - User data (username, password, email, role)
+ * @returns {Promise} Created user data
+ */
+export const createUser = async (data) => {
+  const response = await apiClient.post('/admin/users/create/', data);
+  return response.data;
+};
+
+/**
+ * Delete a user (Admin only)
+ * @param {number} userId - User ID to delete
+ * @returns {Promise} Success message
+ */
+export const deleteUser = async (userId) => {
+  const response = await apiClient.delete(`/admin/users/${userId}/delete/`);
+  return response.data;
+};
+
+/**
+ * Get current user information
+ * @returns {Promise} User data
+ */
+export const getUserInfo = async () => {
+  const response = await apiClient.get('/auth/user/');
+  return response.data;
+};
+
+// ==================== CATEGORIES API ====================
+
+/**
+ * Get all categories
+ * @returns {Promise} Response with categories data
+ */
+export const getCategories = async () => {
+  const response = await apiClient.get('/categories/');
+  return response.data;
+};
+
+/**
+ * Create a new category (admin only)
+ * @param {Object} data - Category data (name, description)
+ * @returns {Promise} Created category data
+ */
+export const createCategory = async (data) => {
+  const response = await apiClient.post('/categories/', data);
+  return response.data;
+};
+
+/**
+ * Update a category (admin only)
+ * @param {Number} id - Category ID
+ * @param {Object} data - Category data (name, description)
+ * @returns {Promise} Updated category data
+ */
+export const updateCategory = async (id, data) => {
+  const response = await apiClient.put(`/categories/${id}/`, data);
+  return response.data;
+};
+
+/**
+ * Delete a category (admin only)
+ * @param {Number} id - Category ID
+ * @returns {Promise} Success message
+ */
+export const deleteCategory = async (id) => {
+  const response = await apiClient.delete(`/categories/${id}/`);
+  return response.data;
+};
 
 // ==================== ITEMS API ====================
 
@@ -225,6 +360,34 @@ export const approveRequisition = async (id) => {
  */
 export const rejectRequisition = async (id) => {
   const response = await apiClient.post(`/requisitions/${id}/reject/`);
+  return response.data;
+};
+
+/**
+ * Assign delivery to a person
+ * @param {number} id - Requisition ID
+ * @param {string} assignedTo - Name of person assigned
+ * @returns {Promise} Updated requisition data
+ */
+export const assignDelivery = async (id, assignedTo) => {
+  const response = await apiClient.post(`/requisitions/${id}/assign_delivery/`, {
+    assigned_to: assignedTo
+  });
+  return response.data;
+};
+
+/**
+ * Confirm receipt of items
+ * @param {number} id - Requisition ID
+ * @param {number} quantityReceived - Quantity actually received
+ * @param {string} receiptNotes - Notes about receipt
+ * @returns {Promise} Updated requisition data
+ */
+export const confirmReceived = async (id, quantityReceived, receiptNotes = '') => {
+  const response = await apiClient.post(`/requisitions/${id}/confirm_received/`, {
+    quantity_received: quantityReceived,
+    receipt_notes: receiptNotes
+  });
   return response.data;
 };
 

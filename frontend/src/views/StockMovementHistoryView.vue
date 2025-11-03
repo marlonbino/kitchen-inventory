@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-900 p-4 md:p-6 lg:p-8">
-    <div class="max-w-7xl mx-auto">
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-900 p-3 sm:p-4 md:p-6 lg:p-8 w-full max-w-full overflow-x-hidden">
+    <div class="max-w-7xl mx-auto w-full">
       <!-- Page Header -->
       <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Stock Movements</h1>
-          <p class="text-gray-600 dark:text-gray-300 mt-1">History of all stock movements</p>
+          <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">All Activities</h1>
+          <p class="text-gray-600 dark:text-gray-200 font-medium mt-1">Everything happening in kitchen</p>
         </div>
         <div class="flex gap-2">
           <BaseButton
@@ -22,7 +22,7 @@
             <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
-            Record Movement
+            Record Activity
           </BaseButton>
         </div>
       </div>
@@ -32,24 +32,24 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <!-- Movement Type Filter -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Movement Type</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-white mb-1">Movement Type</label>
             <select
               v-model="filters.movement_type"
-              class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+              class="block w-full px-3 py-2 border border-gray-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white"
             >
               <option value="">All Types</option>
               <option value="receipt">Receipt</option>
-              <option value="issue">Issue</option>
-              <option value="writeoff">Write-off</option>
+              <option value="usage">Usage</option>
+              <option value="waste">Waste</option>
             </select>
           </div>
 
           <!-- Item Filter -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Item</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-white mb-1">Item</label>
             <select
               v-model="filters.item"
-              class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+              class="block w-full px-3 py-2 border border-gray-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white"
             >
               <option value="">All Items</option>
               <option v-for="item in items" :key="item.id" :value="item.id">
@@ -60,21 +60,21 @@
 
           <!-- Date From -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Date From</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-white mb-1">Date From</label>
             <input
               v-model="filters.date_from"
               type="date"
-              class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+              class="block w-full px-3 py-2 border border-gray-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white"
             />
           </div>
 
           <!-- Date To -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Date To</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-white mb-1">Date To</label>
             <input
               v-model="filters.date_to"
               type="date"
-              class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+              class="block w-full px-3 py-2 border border-gray-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white"
             />
           </div>
         </div>
@@ -91,10 +91,10 @@
       <!-- Error State -->
       <BaseCard v-else-if="error">
         <div class="text-center py-8">
-          <svg class="mx-auto h-12 w-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="mx-auto h-12 w-12 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <p class="mt-2 text-red-600">{{ error }}</p>
+          <p class="mt-2 text-red-600 dark:text-red-400 font-medium">{{ error }}</p>
           <BaseButton variant="primary" @click="loadMovements" class="mt-4">
             Try Again
           </BaseButton>
@@ -104,10 +104,10 @@
       <!-- Empty State -->
       <BaseCard v-else-if="filteredMovements.length === 0">
         <div class="text-center py-12">
-          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
-          <p class="mt-2 text-gray-500">No stock movements found</p>
+          <p class="mt-2 text-gray-500 dark:text-gray-300 font-medium">No stock movements found</p>
           <BaseButton variant="primary" @click="openRecordModal" class="mt-4">
             Record First Movement
           </BaseButton>
@@ -116,109 +116,111 @@
 
       <!-- Movements Table -->
       <div v-else class="hidden md:block">
-        <div class="bg-neutral-800 dark:bg-neutral-800 rounded-xl shadow-elegant overflow-hidden border border-neutral-700 dark:border-neutral-700">
+        <div class="bg-gradient-to-br from-neutral-800 to-neutral-900 dark:from-neutral-800 dark:to-neutral-900 rounded-2xl border border-neutral-700 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden">
           <div class="overflow-x-auto custom-scrollbar">
-            <table class="min-w-full divide-y divide-neutral-700 dark:divide-neutral-700">
-              <thead class="bg-neutral-800 dark:bg-neutral-800 border-b-2 border-neutral-700 dark:border-neutral-700">
+            <table class="min-w-full">
+              <thead class="bg-neutral-800/50 dark:bg-neutral-800/50">
                 <tr>
                   <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
                     DATE
-                  </th>
+                </th>
                   <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
                     ITEM
-                  </th>
+                </th>
                   <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
                     TYPE
-                  </th>
+                </th>
                   <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
                     QTY
-                  </th>
+                </th>
                   <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
                     REF
-                  </th>
+                </th>
                   <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
                     STOCK AFTER
-                  </th>
+                </th>
                   <th class="px-6 py-4 text-right text-xs font-bold text-white uppercase tracking-wider">
                     ACTIONS
-                  </th>
-                </tr>
+                </th>
+              </tr>
               </thead>
-              <tbody class="bg-neutral-800 dark:bg-neutral-800 divide-y divide-neutral-700 dark:divide-neutral-700">
-                <tr
-                  v-for="movement in paginatedMovements"
-                  :key="movement.id"
-                  class="hover:bg-neutral-700/50 dark:hover:bg-neutral-700/50 transition-colors duration-150"
-                >
+              <tbody>
+              <tr
+                v-for="movement in paginatedMovements"
+                :key="movement.id"
+                  class="hover:bg-neutral-700/50 dark:hover:bg-neutral-700/50 transition-all duration-200"
+              >
                   <td class="px-6 py-5 whitespace-nowrap">
                     <span class="text-sm text-gray-300 dark:text-gray-300">{{ formatDateTime(movement.date) }}</span>
-                  </td>
+                </td>
                   <td class="px-6 py-5 whitespace-nowrap">
                     <div class="text-sm font-semibold text-white dark:text-white">
-                      {{ movement.item_name || movement.item?.name || 'Unknown' }}
-                    </div>
-                    <div class="text-xs text-gray-400 dark:text-gray-400 mt-0.5">
-                      {{ getItemCategory(movement) }}
-                    </div>
-                  </td>
+                    {{ movement.item_name || movement.item?.name || 'Unknown' }}
+                  </div>
+                    <div class="mt-1">
+                      <span class="px-2 py-1 text-xs font-medium bg-neutral-700 dark:bg-neutral-700 text-gray-300 dark:text-gray-300 rounded-full">
+                    {{ getItemCategory(movement) }}
+                      </span>
+                  </div>
+                </td>
                   <td class="px-6 py-5 whitespace-nowrap">
-                    <span
+                  <span
                       class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full"
                       :class="getMovementTypeBadgeClassDark(movement.movement_type)"
-                    >
-                      {{ getMovementTypeLabel(movement.movement_type) }}
-                    </span>
-                  </td>
+                  >
+                    {{ getMovementTypeLabel(movement.movement_type) }}
+                  </span>
+                </td>
                   <td class="px-6 py-5 whitespace-nowrap">
-                    <span
-                      class="text-sm font-medium"
+                  <span
+                    class="text-sm font-medium"
                       :class="getQuantityClassDark(movement.movement_type)"
-                    >
-                      {{ getQuantityPrefix(movement.movement_type) }}{{ movement.quantity }}
-                      {{ getItemUnit(movement) }}
-                    </span>
-                  </td>
+                  >
+                    {{ getQuantityPrefix(movement.movement_type) }}{{ movement.quantity }}
+                    {{ getItemUnit(movement) }}
+                  </span>
+                </td>
                   <td class="px-6 py-5 whitespace-nowrap">
                     <span class="text-sm text-gray-300 dark:text-gray-300">{{ movement.reference || '—' }}</span>
-                  </td>
+                </td>
                   <td class="px-6 py-5 whitespace-nowrap">
                     <span class="text-sm font-medium text-gray-300 dark:text-gray-300">
-                      {{ getRunningBalance(movement) }} {{ getItemUnit(movement) }}
+                  {{ getRunningBalance(movement) }} {{ getItemUnit(movement) }}
                     </span>
-                  </td>
+                </td>
                   <td class="px-6 py-5 whitespace-nowrap text-right">
-                    <div class="flex items-center justify-end gap-2">
-                      <button
-                        @click="viewDetails(movement)"
+                  <div class="flex items-center justify-end gap-2">
+                    <button
+                      @click="viewDetails(movement)"
                         class="text-blue-500 dark:text-blue-400 hover:text-blue-400 dark:hover:text-blue-300 rounded-lg p-2 transition-colors duration-200"
-                        title="View Details"
-                      >
+                      title="View Details"
+                    >
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                      </button>
-                      <button
-                        @click="confirmDelete(movement)"
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    </button>
+                    <button
+                      @click="confirmDelete(movement)"
                         class="text-red-500 dark:text-red-400 hover:text-red-400 dark:hover:text-red-300 rounded-lg p-2 transition-colors duration-200"
-                        title="Delete"
-                      >
+                      title="Delete"
+                    >
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-          <!-- Pagination -->
-          <div
-            v-if="totalPages > 1"
-            class="px-6 py-4 border-t border-neutral-700 dark:border-neutral-700 flex items-center justify-between bg-neutral-800 dark:bg-neutral-800"
-          >
+        <!-- Pagination -->
+        <div
+          v-if="totalPages > 1"
+            class="px-6 py-4 flex items-center justify-between bg-neutral-800/50 dark:bg-neutral-800/50"
+        >
           <div class="text-sm text-gray-300 dark:text-gray-300">
             Showing {{ startIndex + 1 }} to {{ endIndex }} of {{ filteredMovements.length }} movements
           </div>
@@ -242,7 +244,83 @@
             </BaseButton>
           </div>
         </div>
-      </BaseCard>
+        </div>
+      </div>
+
+      <!-- Mobile Card View -->
+      <div v-if="!loading && !error && filteredMovements.length > 0" class="md:hidden space-y-4">
+        <div
+          v-for="movement in paginatedMovements"
+          :key="movement.id"
+          class="bg-gradient-to-br from-neutral-800 to-neutral-900 dark:from-neutral-800 dark:to-neutral-900 rounded-2xl p-4 border border-neutral-700 shadow-lg hover:shadow-2xl transition-all duration-300"
+        >
+          <div class="flex items-center justify-between mb-2">
+            <div>
+              <h4 class="font-semibold text-white dark:text-white">
+                {{ movement.item_name || movement.item?.name || 'Unknown' }}
+              </h4>
+              <span class="text-xs text-gray-300 dark:text-gray-300 mt-1 block">
+                {{ formatDateTime(movement.date) }}
+              </span>
+            </div>
+            <span
+              class="inline-flex items-center px-2 py-1 text-xs font-bold rounded-full"
+              :class="getMovementTypeBadgeClassDark(movement.movement_type)"
+            >
+              {{ getMovementTypeLabel(movement.movement_type) }}
+            </span>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <div class="flex items-center gap-3">
+              <span
+                class="font-medium"
+                :class="getQuantityClassDark(movement.movement_type)"
+              >
+                {{ getQuantityPrefix(movement.movement_type) }}{{ movement.quantity }} {{ getItemUnit(movement) }}
+              </span>
+              <span v-if="movement.reference" class="text-gray-300 dark:text-gray-300">
+                Ref: {{ movement.reference }}
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button
+                @click="viewDetails(movement)"
+                class="text-blue-500 dark:text-blue-400 p-2"
+                title="View Details"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Mobile Pagination -->
+        <div
+          v-if="totalPages > 1"
+          class="flex items-center justify-between bg-gradient-to-br from-neutral-800 to-neutral-900 dark:from-neutral-800 dark:to-neutral-900 rounded-2xl p-4 border border-neutral-700 shadow-lg"
+        >
+          <BaseButton
+            variant="secondary"
+            @click="currentPage = Math.max(1, currentPage - 1)"
+            :disabled="currentPage === 1"
+          >
+            Previous
+          </BaseButton>
+          <span class="text-sm text-gray-300 dark:text-gray-300">
+              Page {{ currentPage }} of {{ totalPages }}
+            </span>
+            <BaseButton
+              variant="secondary"
+              @click="currentPage = Math.min(totalPages, currentPage + 1)"
+              :disabled="currentPage === totalPages"
+            >
+              Next
+            </BaseButton>
+          </div>
+        </div>
 
       <!-- Record Movement Modal -->
       <BaseModal :show="showRecordModal" title="Record Stock Movement" @close="closeRecordModal">
@@ -376,6 +454,16 @@ watch(() => store.items.length, (newLength) => {
 const filteredMovements = computed(() => {
   let result = [...movements.value]
 
+  // Filter out incomplete or invalid movements (must have item name and quantity)
+  result = result.filter(movement => 
+    movement &&
+    movement.id !== null &&
+    movement.id !== undefined &&
+    (movement.item_name || movement.item?.name) &&
+    movement.quantity !== null &&
+    movement.quantity !== undefined
+  )
+
   // Filter by movement type
   if (filters.movement_type) {
     result = result.filter(m => m.movement_type === filters.movement_type)
@@ -477,7 +565,7 @@ const calculateRunningBalances = (movementList) => {
       balances[m.id] = balance
       if (m.movement_type === 'receipt') {
         balance -= m.quantity
-      } else if (['issue', 'writeoff'].includes(m.movement_type)) {
+      } else if (['usage', 'waste'].includes(m.movement_type)) {
         balance += m.quantity
       }
     })
@@ -488,7 +576,7 @@ const calculateRunningBalances = (movementList) => {
     sortedMovements.forEach(m => {
       if (m.movement_type === 'receipt') {
         forwardBalance += m.quantity
-      } else if (['issue', 'writeoff'].includes(m.movement_type)) {
+      } else if (['usage', 'waste'].includes(m.movement_type)) {
         forwardBalance -= m.quantity
       }
       balances[m.id] = forwardBalance
@@ -517,8 +605,8 @@ const formatDateTime = (dateString) => {
 const getMovementTypeLabel = (type) => {
   const labels = {
     receipt: 'Receipt',
-    issue: 'Issue',
-    writeoff: 'Write-off'
+    usage: 'Usage',
+    waste: 'Waste'
   }
   return labels[type] || type
 }
@@ -526,8 +614,8 @@ const getMovementTypeLabel = (type) => {
 const getMovementTypeBadgeClass = (type) => {
   const classes = {
     receipt: 'bg-green-100 text-green-800',
-    issue: 'bg-blue-100 text-blue-800',
-    writeoff: 'bg-red-100 text-red-800'
+    usage: 'bg-orange-100 text-orange-800',
+    waste: 'bg-red-100 text-red-800'
   }
   return classes[type] || 'bg-gray-100 text-gray-800'
 }
@@ -535,27 +623,27 @@ const getMovementTypeBadgeClass = (type) => {
 const getMovementTypeBadgeClassDark = (type) => {
   const classes = {
     receipt: 'bg-green-400 dark:bg-green-400 text-black dark:text-black',
-    issue: 'bg-blue-400 dark:bg-blue-400 text-black dark:text-black',
-    writeoff: 'bg-red-400 dark:bg-red-400 text-black dark:text-black'
+    usage: 'bg-orange-400 dark:bg-orange-400 text-black dark:text-black',
+    waste: 'bg-red-400 dark:bg-red-400 text-black dark:text-black'
   }
   return classes[type] || 'bg-gray-400 dark:bg-gray-400 text-black dark:text-black'
 }
 
 const getQuantityPrefix = (type) => {
   if (type === 'receipt') return '+'
-  if (['issue', 'writeoff'].includes(type)) return '-'
+  if (['usage', 'waste'].includes(type)) return '' // tracking only
   return ''
 }
 
 const getQuantityClass = (type) => {
   if (type === 'receipt') return 'text-green-600'
-  if (['issue', 'writeoff'].includes(type)) return 'text-red-600'
+  if (['usage', 'waste'].includes(type)) return 'text-orange-600'
   return 'text-gray-600'
 }
 
 const getQuantityClassDark = (type) => {
   if (type === 'receipt') return 'text-green-400 dark:text-green-400'
-  if (['issue', 'writeoff'].includes(type)) return 'text-red-400 dark:text-red-400'
+  if (['usage', 'waste'].includes(type)) return 'text-orange-400 dark:text-orange-400'
   return 'text-gray-300 dark:text-gray-300'
 }
 
@@ -694,4 +782,19 @@ onMounted(async () => {
   }
 })
 </script>
+
+<style scoped>
+/* Remove all table borders */
+table {
+  border-collapse: collapse;
+}
+
+tbody tr {
+  border: none !important;
+}
+
+tbody td {
+  border: none !important;
+}
+</style>
 

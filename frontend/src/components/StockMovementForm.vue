@@ -11,7 +11,7 @@
 
     <BaseSelect
       v-model="formData.movement_type"
-      label="Movement Type"
+      label="Action Type"
       :options="movementTypeOptions"
       :error="errors.movement_type"
       :required="true"
@@ -46,9 +46,69 @@
       <p v-if="errors.notes" class="mt-1 text-sm text-red-600">{{ errors.notes }}</p>
     </div>
 
-    <!-- Stock Warning for Issue/Writeoff -->
+    <!-- Info for Usage Tracking -->
     <div
-      v-if="selectedItem && ['issue', 'writeoff'].includes(formData.movement_type) && formData.quantity > 0"
+      v-if="selectedItem && formData.movement_type === 'usage'"
+      class="p-3 bg-orange-50 border border-orange-200 rounded-md"
+    >
+      <div class="flex items-start">
+        <svg
+          class="w-5 h-5 mt-0.5 mr-2 text-orange-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <div class="flex-1">
+          <p class="text-sm font-medium text-orange-800">
+            Stock will decrease after usage:
+          </p>
+          <p class="text-sm mt-1 text-orange-700">
+            Current: {{ selectedItem.current_stock }} {{ selectedItem.unit }} → After: <span class="font-semibold">{{ projectedStock }}</span> {{ selectedItem.unit }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info for Waste Tracking -->
+    <div
+      v-if="selectedItem && formData.movement_type === 'waste'"
+      class="p-3 bg-green-50 border border-green-200 rounded-md"
+    >
+      <div class="flex items-start">
+        <svg
+          class="w-5 h-5 mt-0.5 mr-2 text-green-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <div class="flex-1">
+          <p class="text-sm font-medium text-green-800">
+            ℹ️ This is for tracking only - stock remains unchanged
+          </p>
+          <p class="text-sm mt-1 text-green-700">
+            Current stock: {{ selectedItem.current_stock }} {{ selectedItem.unit }}
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Stock Info for Receipts -->
+    <div
+      v-if="selectedItem && formData.movement_type === 'receipt' && formData.quantity > 0"
       class="p-3 rounded-md"
       :class="
         projectedStock < selectedItem.min_stock_level
@@ -85,9 +145,9 @@
             "
           >
             <span v-if="projectedStock < selectedItem.min_stock_level">
-              ⚠️ Warning: This will result in low stock!
+              ⚠️ Warning: Still below minimum level!
             </span>
-            <span v-else>Stock after movement:</span>
+            <span v-else>Stock after delivery:</span>
           </p>
           <p
             class="text-sm mt-1"
@@ -100,25 +160,8 @@
             Current: {{ selectedItem.current_stock }} {{ selectedItem.unit }} → After:
             {{ projectedStock }} {{ selectedItem.unit }}
           </p>
-          <p
-            v-if="projectedStock < selectedItem.min_stock_level"
-            class="text-xs mt-1 text-yellow-600"
-          >
-            Minimum stock level is {{ selectedItem.min_stock_level }} {{ selectedItem.unit }}
-          </p>
         </div>
       </div>
-    </div>
-
-    <!-- Stock Validation Error -->
-    <div
-      v-if="selectedItem && ['issue', 'writeoff'].includes(formData.movement_type) && formData.quantity > selectedItem.current_stock"
-      class="p-3 bg-red-50 border border-red-200 rounded-md"
-    >
-      <p class="text-sm text-red-800">
-        ⚠️ Cannot {{ formData.movement_type }} {{ formData.quantity }} {{ selectedItem.unit }}.
-        Current stock is only {{ selectedItem.current_stock }} {{ selectedItem.unit }}.
-      </p>
     </div>
 
     <div class="flex justify-end gap-3 pt-4 border-t">
@@ -131,7 +174,7 @@
         :loading="loading"
         :disabled="loading || hasInvalidStock"
       >
-        Record Movement
+        Save Action
       </BaseButton>
     </div>
   </form>
@@ -156,15 +199,15 @@ const emit = defineEmits(['submit', 'cancel'])
 const store = useInventoryStore()
 
 const movementTypeOptions = [
-  { value: 'receipt', label: 'Receipt' },
-  { value: 'issue', label: 'Issue' },
-  { value: 'writeoff', label: 'Write-off' }
+  { value: 'receipt', label: 'Receive Delivery' },
+  { value: 'usage', label: 'Track Usage (Cooking)' },
+  { value: 'waste', label: 'Track Waste/Spillage' }
 ]
 
 const itemOptions = computed(() => {
   return store.items.map(item => ({
     value: item.id,
-    label: `${item.name} (${item.category}) - Stock: ${item.current_stock} ${item.unit}`
+    label: `${item.name} (${item.category_name}) - Stock: ${item.current_stock} ${item.unit}`
   }))
 })
 
@@ -194,15 +237,17 @@ const projectedStock = computed(() => {
   
   if (formData.movement_type === 'receipt') {
     return selectedItem.value.current_stock + formData.quantity
-  } else if (['issue', 'writeoff'].includes(formData.movement_type)) {
+  }
+  if (formData.movement_type === 'usage') {
     return Math.max(0, selectedItem.value.current_stock - formData.quantity)
   }
+  // waste doesn't affect stock
   return selectedItem.value.current_stock
 })
 
 const hasInvalidStock = computed(() => {
-  if (!selectedItem.value || formData.movement_type === 'receipt') return false
-  return formData.quantity > selectedItem.value.current_stock
+  // No invalid stock for any type - usage and waste are tracking only
+  return false
 })
 
 // Reset form when modal closes
@@ -244,14 +289,8 @@ const validateForm = () => {
   if (!formData.quantity || formData.quantity <= 0) {
     errors.quantity = 'Quantity must be greater than 0'
     isValid = false
-  } else if (
-    selectedItem.value &&
-    ['issue', 'writeoff'].includes(formData.movement_type) &&
-    formData.quantity > selectedItem.value.current_stock
-  ) {
-    errors.quantity = `Cannot ${formData.movement_type} more than available stock`
-    isValid = false
   }
+  // No stock validation needed - usage and waste are tracking only
 
   return isValid
 }

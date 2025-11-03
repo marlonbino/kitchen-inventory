@@ -1,13 +1,14 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-900 p-6 md:p-8 lg:p-10">
-    <div class="max-w-7xl mx-auto">
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-900 p-3 sm:p-4 md:p-6 lg:p-8 w-full max-w-full overflow-x-hidden">
+    <div class="max-w-7xl mx-auto w-full">
       <!-- Page Header -->
       <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white mb-2 bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">Items</h1>
-          <p class="text-lg text-gray-600 dark:text-gray-300 font-medium">Manage your inventory items</p>
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white mb-2 bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">Current Stock</h1>
+          <p class="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-300 font-medium">View what is available in kitchen now</p>
         </div>
         <BaseButton
+          v-if="isAdmin"
           variant="primary"
           @click="openAddModal"
           class="shadow-md"
@@ -51,8 +52,8 @@
               class="block w-full px-3 py-2 border border-gray-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-neutral-800 text-gray-900 dark:text-white"
             >
               <option value="">All Categories</option>
-              <option v-for="category in categories" :key="category" :value="category">
-                {{ category }}
+              <option v-for="category in categories" :key="category.id" :value="category.id">
+                {{ category.name }}
               </option>
             </select>
           </div>
@@ -109,10 +110,10 @@
 
       <!-- Desktop Table View -->
       <div v-else class="hidden md:block">
-        <div class="bg-neutral-800 dark:bg-neutral-800 rounded-xl shadow-elegant overflow-hidden border border-neutral-700 dark:border-neutral-700">
+        <div class="bg-gradient-to-br from-neutral-800 to-neutral-900 dark:from-neutral-800 dark:to-neutral-900 rounded-2xl border border-neutral-700 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden">
           <div class="overflow-x-auto custom-scrollbar">
-            <table class="min-w-full divide-y divide-neutral-700 dark:divide-neutral-700">
-              <thead class="bg-neutral-800 dark:bg-neutral-800 border-b-2 border-neutral-700 dark:border-neutral-700">
+            <table class="min-w-full">
+              <thead class="bg-neutral-800/50 dark:bg-neutral-800/50">
                 <tr>
                   <th
                     class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-neutral-700 dark:hover:bg-neutral-700 transition-colors"
@@ -139,19 +140,28 @@
                   <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
                     UNIT
                   </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    PRICE (KES)
+                  </th>
                   <th
                     class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-neutral-700 dark:hover:bg-neutral-700 transition-colors"
                     @click="sortBy('current_stock')"
                   >
                     <div class="flex items-center gap-2">
-                      CURRENT STOCK
+                      STOCK AVAILABLE
                       <svg v-if="sortField === 'current_stock'" class="w-4 h-4 text-blue-500 dark:text-blue-400" :class="sortDirection === 'asc' ? '' : 'transform rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                       </svg>
                     </div>
                   </th>
                   <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
-                    MINIMUM
+                    MINIMUM LEVEL
+                  </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    VALUE (KES)
+                  </th>
+                  <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                    SUPPLIER
                   </th>
                   <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
                     STATUS
@@ -161,22 +171,27 @@
                   </th>
                 </tr>
               </thead>
-              <tbody class="bg-neutral-800 dark:bg-neutral-800 divide-y divide-neutral-700 dark:divide-neutral-700">
+              <tbody>
                 <tr
-                  v-for="item in filteredItems"
+                  v-for="item in displayedItems"
                   :key="item.id"
-                  class="hover:bg-neutral-700/50 dark:hover:bg-neutral-700/50 transition-colors duration-150"
+                  class="hover:bg-neutral-700/50 dark:hover:bg-neutral-700/50 transition-all duration-200"
                 >
                   <td class="px-6 py-5 whitespace-nowrap">
                     <div class="text-sm font-semibold text-white dark:text-white">{{ item.name }}</div>
                   </td>
                   <td class="px-6 py-5 whitespace-nowrap">
                     <span class="px-3 py-1.5 text-xs font-medium bg-neutral-700 dark:bg-neutral-700 text-gray-300 dark:text-gray-300 rounded-full">
-                      {{ item.category }}
+                      {{ item.category_name }}
                     </span>
                   </td>
                   <td class="px-6 py-5 whitespace-nowrap">
                     <span class="text-sm text-gray-300 dark:text-gray-300">{{ item.unit }}</span>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <span class="text-sm text-gray-300 dark:text-gray-300">
+                      {{ item.price_per_unit ? formatCurrency(item.price_per_unit) : '-' }}
+                    </span>
                   </td>
                   <td class="px-6 py-5 whitespace-nowrap">
                     <StockBadge
@@ -189,12 +204,20 @@
                     <span class="text-sm text-gray-300 dark:text-gray-300">{{ item.min_stock_level }}</span>
                   </td>
                   <td class="px-6 py-5 whitespace-nowrap">
+                    <span class="text-sm font-semibold text-gray-300 dark:text-gray-300">
+                      {{ item.total_value ? formatCurrency(item.total_value) : '-' }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
+                    <span class="text-sm text-gray-300 dark:text-gray-300">{{ item.supplier || '-' }}</span>
+                  </td>
+                  <td class="px-6 py-5 whitespace-nowrap">
                     <span
                       v-if="item.is_low_stock"
                       class="inline-flex items-center px-3 py-1.5 text-xs font-bold bg-red-400 dark:bg-red-400 text-black dark:text-black rounded-full"
                     >
                       <span class="w-2 h-2 bg-black dark:bg-black rounded-full mr-2"></span>
-                      Low Stock
+                      Restock Needed
                     </span>
                     <span
                       v-else
@@ -207,6 +230,7 @@
                   <td class="px-6 py-5 whitespace-nowrap text-right">
                     <div class="flex items-center justify-end gap-2">
                       <button
+                        v-if="isAdmin"
                         @click="openEditModal(item)"
                         class="text-blue-500 dark:text-blue-400 hover:text-blue-400 dark:hover:text-blue-300 rounded-lg p-2 transition-colors duration-200"
                         title="Edit"
@@ -219,24 +243,25 @@
                       <button
                         @click="openQuickReceipt(item)"
                         class="text-green-500 dark:text-green-400 hover:text-green-400 dark:hover:text-green-300 rounded-lg p-2 transition-colors duration-200"
-                        title="Quick Receipt"
-                        aria-label="Add stock receipt"
+                        title="Receive Delivery"
+                        aria-label="Receive delivery"
                       >
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
                       </button>
                       <button
-                        @click="openQuickIssue(item)"
+                        @click="openQuickUsage(item)"
                         class="text-orange-500 dark:text-yellow-400 hover:text-orange-400 dark:hover:text-yellow-300 rounded-lg p-2 transition-colors duration-200"
-                        title="Quick Issue"
-                        aria-label="Issue stock"
+                        title="Track Usage"
+                        aria-label="Track usage"
                       >
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
                         </svg>
                       </button>
                       <button
+                        v-if="isAdmin"
                         @click="openDeleteConfirm(item)"
                         class="text-red-500 dark:text-red-400 hover:text-red-400 dark:hover:text-red-300 rounded-lg p-2 transition-colors duration-200"
                         title="Delete"
@@ -252,13 +277,38 @@
               </tbody>
             </table>
           </div>
+          <!-- Show More / Show Less Button -->
+          <div v-if="filteredItems.length > 0" class="px-6 py-4 bg-neutral-800/50 dark:bg-neutral-800/50">
+            <div class="flex items-center justify-center gap-3">
+              <button
+                v-if="hasMoreItems"
+                @click="showMore"
+                class="text-blue-500 dark:text-blue-400 hover:text-blue-400 dark:hover:text-blue-300 font-semibold text-sm flex items-center gap-2 transition-colors duration-200"
+              >
+                See More ({{ filteredItems.length - itemsToShow }} remaining)
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <button
+                v-if="showLessButton"
+                @click="showLess"
+                class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 font-semibold text-sm flex items-center gap-2 transition-colors duration-200"
+              >
+                Show Less
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Mobile Card View -->
       <div v-if="!loading && !error && filteredItems.length > 0" class="md:hidden space-y-4">
         <BaseCard
-          v-for="item in filteredItems"
+          v-for="item in displayedItems"
           :key="item.id"
           class="hover:shadow-lg transition-shadow"
         >
@@ -267,7 +317,7 @@
               <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ item.name }}</h3>
               <div class="flex items-center gap-2 mt-1">
                 <span class="px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-neutral-700 text-gray-800 dark:text-gray-300 rounded">
-                  {{ item.category }}
+                  {{ item.category_name }}
                 </span>
                 <span class="text-sm text-gray-500 dark:text-gray-400">{{ item.unit }}</span>
               </div>
@@ -297,6 +347,7 @@
 
           <div class="flex gap-2 pt-3 border-t dark:border-neutral-700">
             <BaseButton
+              v-if="isAdmin"
               variant="secondary"
               @click="openEditModal(item)"
               class="flex-1 text-sm py-2"
@@ -311,6 +362,7 @@
               Receipt
             </BaseButton>
             <BaseButton
+              v-if="isAdmin"
               variant="danger"
               @click="openDeleteConfirm(item)"
               class="flex-1 text-sm py-2"
@@ -319,12 +371,35 @@
             </BaseButton>
           </div>
         </BaseCard>
+        <!-- Show More / Show Less Button (Mobile) -->
+        <div v-if="filteredItems.length > 0" class="flex items-center justify-center gap-3 pt-2">
+          <button
+            v-if="hasMoreItems"
+            @click="showMore"
+            class="text-blue-500 dark:text-blue-400 hover:text-blue-400 dark:hover:text-blue-300 font-semibold text-sm flex items-center gap-2 transition-colors duration-200"
+          >
+            See More ({{ filteredItems.length - itemsToShow }} remaining)
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <button
+            v-if="showLessButton"
+            @click="showLess"
+            class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 font-semibold text-sm flex items-center gap-2 transition-colors duration-200"
+          >
+            Show Less
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <!-- Add/Edit Item Modal -->
       <BaseModal
         :show="showItemModal"
-        :title="editingItem ? 'Edit Item' : 'Add New Item'"
+        :title="editingItem ? 'Edit Item Details' : 'Add New Item to System'"
         @close="closeItemModal"
       >
         <ItemForm
@@ -339,7 +414,7 @@
       <!-- Quick Receipt Modal -->
       <BaseModal
         :show="showReceiptModal"
-        title="Quick Receipt"
+        title="Record Purchase Delivery"
         @close="closeReceiptModal"
       >
         <QuickStockForm
@@ -357,9 +432,9 @@
 
       <!-- Quick Issue Modal -->
       <BaseModal
-        :show="showIssueModal"
-        title="Quick Issue"
-        @close="closeIssueModal"
+        :show="showUsageModal"
+        title="Quick Usage Tracking"
+        @close="closeUsageModal"
       >
         <QuickStockForm
           v-if="selectedItem"
@@ -367,10 +442,10 @@
           :item-name="selectedItem.name"
           :current-stock="selectedItem.current_stock"
           :unit="selectedItem.unit"
-          movement-type="issue"
+          movement-type="usage"
           :loading="movementLoading"
-          @submit="handleQuickIssue"
-          @cancel="closeIssueModal"
+          @submit="handleQuickUsage"
+          @cancel="closeUsageModal"
         />
       </BaseModal>
 
@@ -401,9 +476,14 @@ import ConfirmDialog from '../components/ConfirmDialog.vue'
 import StockBadge from '../components/StockBadge.vue'
 import ItemForm from '../components/ItemForm.vue'
 import QuickStockForm from '../components/QuickStockForm.vue'
+import { getCategories, getUserInfo } from '../services/api.js'
 
 const store = useInventoryStore()
 const toast = useToast()
+
+// Current user info
+const currentUser = ref(null)
+const isAdmin = computed(() => currentUser.value?.role === 'admin')
 
 // State
 const loading = ref(false)
@@ -412,13 +492,14 @@ const searchQuery = ref('')
 const debouncedSearchQuery = useDebounce(searchQuery, 300)
 const selectedCategory = ref('')
 const selectedUnit = ref('')
+const itemsToShow = ref(5)
 const sortField = ref('name')
 const sortDirection = ref('asc')
 
 // Modal states
 const showItemModal = ref(false)
 const showReceiptModal = ref(false)
-const showIssueModal = ref(false)
+const showUsageModal = ref(false)
 const showDeleteConfirm = ref(false)
 const editingItem = ref(null)
 const selectedItem = ref(null)
@@ -426,16 +507,34 @@ const itemToDelete = ref(null)
 const itemLoading = ref(false)
 const movementLoading = ref(false)
 
-// Constants
-const categories = ['Produce', 'Dairy', 'Pantry', 'Meat', 'Spices', 'Frozen', 'Other']
+// State for categories
+const categories = ref([])
+
+// Load categories on mount
+onMounted(async () => {
+  try {
+    const cats = await getCategories()
+    categories.value = cats
+  } catch (error) {
+    console.error('Error loading categories:', error)
+  }
+  
+  // Load user info
+  try {
+    const user = await getUserInfo()
+    currentUser.value = user
+  } catch (error) {
+    console.error('Failed to get user info:', error)
+  }
+})
+
 const units = [
-  { value: 'kg', label: 'Kilogram' },
-  { value: 'g', label: 'Gram' },
-  { value: 'lb', label: 'Pound' },
-  { value: 'oz', label: 'Ounce' },
+  { value: 'kg', label: 'Kilogram (Kg)' },
+  { value: 'litre', label: 'Litre (L)' },
   { value: 'piece', label: 'Piece' },
-  { value: 'bottle', label: 'Bottle' },
-  { value: 'pack', label: 'Pack' }
+  { value: 'packet', label: 'Packet' },
+  { value: 'dozen', label: 'Dozen' },
+  { value: 'bale', label: 'Bale' }
 ]
 
 // Computed
@@ -445,6 +544,18 @@ const loadingState = computed(() => store.loading.items)
 const filteredItems = computed(() => {
   let result = [...items.value]
 
+  // Filter out incomplete or invalid items (must have name, category, unit)
+  result = result.filter(item => 
+    item && 
+    item.name && 
+    item.name.trim() !== '' && 
+    item.category &&  // category is now an ID
+    item.unit &&
+    item.unit.trim() !== '' &&
+    item.id !== null &&
+    item.id !== undefined
+  )
+
   // Search filter (using debounced value)
   if (debouncedSearchQuery.value.trim()) {
     const query = debouncedSearchQuery.value.toLowerCase().trim()
@@ -453,7 +564,7 @@ const filteredItems = computed(() => {
     )
   }
 
-  // Category filter
+  // Category filter (by ID now)
   if (selectedCategory.value) {
     result = result.filter(item => item.category === selectedCategory.value)
   }
@@ -482,6 +593,33 @@ const filteredItems = computed(() => {
   })
 
   return result
+})
+
+// Computed for displayed items (with show more functionality)
+const displayedItems = computed(() => {
+  return filteredItems.value.slice(0, itemsToShow.value)
+})
+
+const hasMoreItems = computed(() => {
+  return filteredItems.value.length > itemsToShow.value
+})
+
+const showLessButton = computed(() => {
+  return itemsToShow.value > 5
+})
+
+// Methods for show more/less
+const showMore = () => {
+  itemsToShow.value += 5
+}
+
+const showLess = () => {
+  itemsToShow.value = 5
+}
+
+// Reset items to show when filters change
+watch([debouncedSearchQuery, selectedCategory, selectedUnit], () => {
+  itemsToShow.value = 5
 })
 
 // Methods
@@ -533,13 +671,13 @@ const closeReceiptModal = () => {
   selectedItem.value = null
 }
 
-const openQuickIssue = (item) => {
+const openQuickUsage = (item) => {
   selectedItem.value = item
-  showIssueModal.value = true
+  showUsageModal.value = true
 }
 
-const closeIssueModal = () => {
-  showIssueModal.value = false
+const closeUsageModal = () => {
+  showUsageModal.value = false
   selectedItem.value = null
 }
 
@@ -596,16 +734,16 @@ const handleQuickReceipt = async (formData) => {
   }
 }
 
-const handleQuickIssue = async (formData) => {
+const handleQuickUsage = async (formData) => {
   movementLoading.value = true
   try {
     await store.addStockMovement(formData)
-    toast.success('Stock issued successfully')
-    closeIssueModal()
+    toast.success('Usage tracked successfully')
+    closeUsageModal()
     // Reload items to update stock levels
     await loadItems()
   } catch (err) {
-    const errorMessage = err.response?.data?.error || err.message || 'Failed to issue stock'
+    const errorMessage = err.response?.data?.error || err.message || 'Failed to track usage'
     toast.error(errorMessage)
   } finally {
     movementLoading.value = false
@@ -629,9 +767,33 @@ const handleDeleteConfirm = async () => {
   }
 }
 
+const formatCurrency = (value) => {
+  if (!value) return 'KSh 0.00'
+  // Format number with commas and add KSh prefix
+  return 'KSh ' + new Intl.NumberFormat('en-KE', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(value)
+}
+
 // Lifecycle
 onMounted(() => {
   loadItems()
 })
 </script>
+
+<style scoped>
+/* Remove all table borders */
+table {
+  border-collapse: collapse;
+}
+
+tbody tr {
+  border: none !important;
+}
+
+tbody td {
+  border: none !important;
+}
+</style>
 

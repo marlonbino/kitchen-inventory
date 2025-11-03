@@ -7,6 +7,9 @@ export default {
   darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Roboto', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', 'sans-serif'],
+      },
       colors: {
         // High-contrast dark mode color tokens
         'dark-base': '#18181B', // Deep charcoal - base background

@@ -12,11 +12,18 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    host: '0.0.0.0',
+    allowedHosts: [
+      'localhost',
+      'dung-subarcuated-jenell.ngrok-free.dev',
+      '.ngrok.io',
+      '.ngrok-free.app',
+      '.ngrok.app'
+    ],
     proxy: {
       '/api': {
         target: 'http://localhost:8000',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        changeOrigin: true
       }
     }
   }

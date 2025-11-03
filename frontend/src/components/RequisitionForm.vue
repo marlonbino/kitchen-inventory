@@ -75,7 +75,7 @@
         Cancel
       </BaseButton>
       <BaseButton type="submit" variant="primary" :loading="loading" :disabled="loading">
-        Create Requisition
+        Submit Request
       </BaseButton>
     </div>
   </form>
@@ -142,7 +142,7 @@ const sortedItemOptions = computed(() => {
   
   return items.map(item => ({
     value: item.id,
-    label: `${item.name} (${item.category})${item.is_low_stock ? ' ⚠️ Low Stock' : ''} - Stock: ${item.current_stock} ${item.unit}`
+    label: `${item.name} (${item.category_name})${item.is_low_stock ? ' ⚠️ Low Stock' : ''} - Stock: ${item.current_stock} ${item.unit}`
   }))
 })
 

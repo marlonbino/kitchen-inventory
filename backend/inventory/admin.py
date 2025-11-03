@@ -1,12 +1,19 @@
 from django.contrib import admin
-from .models import Item, StockMovement, Requisition
+from .models import Category, Item, StockMovement, Requisition
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ['name', 'description', 'created_at', 'updated_at']
+    search_fields = ['name', 'description']
+    ordering = ['name']
 
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
     list_display = ['name', 'category', 'unit', 'current_stock', 'min_stock_level', 'is_low_stock', 'created_at']
     list_filter = ['category', 'unit', 'created_at']  # Removed is_low_stock (property, not a field)
-    search_fields = ['name', 'category']
+    search_fields = ['name', 'category__name']
     readonly_fields = ['created_at', 'updated_at', 'is_low_stock']
     list_editable = ['min_stock_level']
     ordering = ['name']

@@ -1,50 +1,73 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-gray-50 dark:bg-neutral-900">
-    <!-- Sidebar + Main Layout -->
-    <div class="flex flex-1 overflow-hidden">
-      <!-- Sidebar -->
-      <Sidebar :is-mobile-open="isMobileSidebarOpen" @close-mobile="isMobileSidebarOpen = false" />
-      
-      <!-- Main Content Area -->
-      <div class="flex-1 flex flex-col overflow-hidden">
-        <!-- Top Header -->
-        <TopHeader @toggle-mobile-sidebar="isMobileSidebarOpen = !isMobileSidebarOpen" />
+  <div class="h-screen flex flex-col bg-gray-50 dark:bg-neutral-900 overflow-x-hidden overflow-y-hidden">
+    <!-- Check if current route is auth page -->
+    <template v-if="isAuthPage">
+      <!-- Full screen auth layout -->
+      <router-view v-slot="{ Component, route }">
+        <transition
+          name="fade-slide"
+          mode="out-in"
+        >
+          <component :is="Component" :key="route.path" />
+        </transition>
+      </router-view>
+    </template>
+    <template v-else>
+      <!-- Sidebar + Main Layout -->
+      <div class="flex flex-1 overflow-hidden w-full h-full">
+        <!-- Sidebar -->
+        <Sidebar :is-mobile-open="isMobileSidebarOpen" @close-mobile="isMobileSidebarOpen = false" />
         
-        <!-- Page Content -->
-        <main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-neutral-900">
-          <router-view v-slot="{ Component, route }">
-            <transition
-              name="fade-slide"
-              mode="out-in"
-            >
-              <component :is="Component" :key="route.path" />
-            </transition>
-          </router-view>
-        </main>
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col overflow-hidden min-w-0 w-full max-w-full h-full">
+          <!-- Top Header -->
+          <TopHeader @toggle-mobile-sidebar="isMobileSidebarOpen = !isMobileSidebarOpen" />
+          
+          <!-- Page Content -->
+          <main class="flex-1 overflow-y-auto overflow-x-hidden bg-gray-50 dark:bg-neutral-900 w-full max-w-full">
+            <div class="w-full max-w-full">
+              <router-view v-slot="{ Component, route }">
+                <transition
+                  name="fade-slide"
+                  mode="out-in"
+                >
+                  <component :is="Component" :key="route.path" />
+                </transition>
+              </router-view>
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
 
-    <!-- Global Loading Overlay -->
-    <LoadingSpinner
-      v-if="isLoading"
-      overlay
-      text="Loading..."
-    />
+      <!-- Global Loading Overlay -->
+      <LoadingSpinner
+        v-if="isLoading"
+        overlay
+        text="Loading..."
+      />
+    </template>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { useInventoryStore } from './stores/inventory'
 import { useTheme } from './composables/useTheme'
 import Sidebar from './components/Sidebar.vue'
 import TopHeader from './components/TopHeader.vue'
 import LoadingSpinner from './components/LoadingSpinner.vue'
 
+const route = useRoute()
 const store = useInventoryStore()
 const { initTheme } = useTheme()
 
 const isMobileSidebarOpen = ref(false)
+
+// Check if current route is auth page (login or register)
+const isAuthPage = computed(() => {
+  return route.name === 'login' || route.name === 'register'
+})
 
 // Check if any store is loading
 const isLoading = computed(() => {
@@ -62,15 +85,18 @@ onMounted(async () => {
   // Initialize theme
   initTheme()
   
-  try {
-    // Load items and low stock items in parallel
-    await Promise.all([
-      store.fetchItems(),
-      store.fetchLowStock(),
-      store.fetchRequisitions()
-    ])
-  } catch (error) {
-    console.error('Failed to load initial data:', error)
+  // Only load data if we're on an authenticated page
+  if (!isAuthPage.value) {
+    try {
+      // Load items and low stock items in parallel
+      await Promise.all([
+        store.fetchItems(),
+        store.fetchLowStock(),
+        store.fetchRequisitions()
+      ])
+    } catch (error) {
+      console.error('Failed to load initial data:', error)
+    }
   }
 })
 </script>

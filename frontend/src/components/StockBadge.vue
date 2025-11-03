@@ -7,7 +7,7 @@
     :aria-label="ariaLabel"
   >
     <span class="font-bold">{{ current }}</span>
-    <span class="font-bold">/</span>
+    <span class="font-bold mx-1">/</span>
     <span class="font-bold">{{ minimum }}</span>
     <span
       v-if="showPercentage"

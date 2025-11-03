@@ -10,6 +10,8 @@ import {
   createRequisition as apiCreateRequisition,
   approveRequisition as apiApproveRequisition,
   rejectRequisition as apiRejectRequisition,
+  assignDelivery as apiAssignDelivery,
+  confirmReceived as apiConfirmReceived,
   getLowStock,
   getDashboardStats
 } from '../services/api'
@@ -94,7 +96,7 @@ export const useInventoryStore = defineStore('inventory', {
      * @returns {Array} Array of items in category
      */
     itemsByCategory: (state) => (category) => {
-      return state.items.filter(item => item.category === category)
+      return state.items.filter(item => item.category_name === category)
     },
 
     /**
@@ -227,8 +229,8 @@ export const useInventoryStore = defineStore('inventory', {
         if (item) {
           if (newMovement.movement_type === 'receipt') {
             item.current_stock += newMovement.quantity
-          } else if (['issue', 'writeoff'].includes(newMovement.movement_type)) {
-            item.current_stock = Math.max(0, item.current_stock - newMovement.quantity)
+          } else if (['usage', 'waste'].includes(newMovement.movement_type)) {
+            // No change - tracking only
           }
         }
         
@@ -301,6 +303,43 @@ export const useInventoryStore = defineStore('inventory', {
     async rejectRequisition(id) {
       try {
         const updatedRequisition = await apiRejectRequisition(id)
+        const index = this.requisitions.findIndex(req => req.id === id)
+        if (index !== -1) {
+          this.requisitions[index] = updatedRequisition
+        }
+        return updatedRequisition
+      } catch (error) {
+        throw error
+      }
+    },
+
+    /**
+     * Assign delivery to a person
+     * @param {number} id - Requisition ID
+     * @param {string} assignedTo - Name of person assigned
+     */
+    async assignDelivery(id, assignedTo) {
+      try {
+        const updatedRequisition = await apiAssignDelivery(id, assignedTo)
+        const index = this.requisitions.findIndex(req => req.id === id)
+        if (index !== -1) {
+          this.requisitions[index] = updatedRequisition
+        }
+        return updatedRequisition
+      } catch (error) {
+        throw error
+      }
+    },
+
+    /**
+     * Confirm receipt of items
+     * @param {number} id - Requisition ID
+     * @param {number} quantityReceived - Quantity actually received
+     * @param {string} receiptNotes - Notes about receipt
+     */
+    async confirmReceived(id, quantityReceived, receiptNotes) {
+      try {
+        const updatedRequisition = await apiConfirmReceived(id, quantityReceived, receiptNotes)
         const index = this.requisitions.findIndex(req => req.id === id)
         if (index !== -1) {
           this.requisitions[index] = updatedRequisition

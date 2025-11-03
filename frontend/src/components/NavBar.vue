@@ -4,13 +4,9 @@
       <div class="flex justify-between h-16">
         <!-- Logo and Title -->
         <div class="flex items-center">
-          <router-link to="/" class="flex items-center space-x-3 group transition-transform duration-200 hover:scale-105">
-            <div class="p-2 gradient-primary rounded-xl shadow-md group-hover:shadow-lg transition-shadow duration-300">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
-            </div>
-            <span class="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent hidden sm:block">Kitchen Inventory</span>
+          <router-link to="/" class="flex items-center space-x-2 group transition-transform duration-200 hover:scale-105">
+            <img :src="bitzLogo" alt="BITZ Logo" class="h-10 w-auto">
+            <span class="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent hidden sm:block">Kitchen</span>
           </router-link>
         </div>
 
@@ -110,6 +106,7 @@
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useInventoryStore } from '../stores/inventory'
+import bitzLogo from '../assets/bitz-logo.svg'
 
 const route = useRoute()
 const store = useInventoryStore()

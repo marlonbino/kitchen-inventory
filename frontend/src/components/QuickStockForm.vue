@@ -37,21 +37,41 @@
     />
 
     <div
-      v-if="movementType === 'issue' && currentStock > 0"
-      class="p-3 bg-yellow-50 border border-yellow-200 rounded-md"
+      v-if="movementType === 'usage'"
+      class="p-3 bg-orange-50 border border-orange-200 rounded-md"
     >
-      <p class="text-sm text-yellow-800">
-        After this movement, stock will be: <span class="font-semibold">{{ projectedStock }}</span> {{ unit }}
-      </p>
+      <div class="flex items-start">
+        <svg class="w-5 h-5 mt-0.5 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div>
+          <p class="text-sm font-medium text-orange-800">
+            Stock will decrease after usage:
+          </p>
+          <p class="text-sm text-orange-700 mt-1">
+            Current: {{ currentStock }} {{ unit }} → After: <span class="font-semibold">{{ projectedStock }}</span> {{ unit }}
+          </p>
+        </div>
+      </div>
     </div>
-
+    
     <div
-      v-if="movementType === 'issue' && formData.quantity > currentStock"
-      class="p-3 bg-red-50 border border-red-200 rounded-md"
+      v-if="movementType === 'receipt'"
+      class="p-3 bg-blue-50 border border-blue-200 rounded-md"
     >
-      <p class="text-sm text-red-800">
-        ⚠️ Cannot issue {{ formData.quantity }} {{ unit }}. Current stock is only {{ currentStock }} {{ unit }}.
-      </p>
+      <div class="flex items-start">
+        <svg class="w-5 h-5 mt-0.5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div>
+          <p class="text-sm font-medium text-blue-800">
+            Stock will increase after delivery:
+          </p>
+          <p class="text-sm text-blue-700 mt-1">
+            Current: {{ currentStock }} {{ unit }} → After: <span class="font-semibold">{{ projectedStock }}</span> {{ unit }}
+          </p>
+        </div>
+      </div>
     </div>
 
     <div class="flex justify-end gap-3 pt-4 border-t">
@@ -64,9 +84,9 @@
       </BaseButton>
       <BaseButton
         type="submit"
-        :variant="movementType === 'issue' ? 'danger' : 'primary'"
+        :variant="movementType === 'usage' ? 'secondary' : 'primary'"
         :loading="loading"
-        :disabled="loading || (movementType === 'issue' && formData.quantity > currentStock)"
+        :disabled="loading"
       >
         {{ submitText }}
       </BaseButton>
@@ -99,7 +119,7 @@ const props = defineProps({
   movementType: {
     type: String,
     required: true,
-    validator: (value) => ['receipt', 'issue'].includes(value)
+    validator: (value) => ['receipt', 'usage'].includes(value)
   },
   loading: {
     type: Boolean,
@@ -130,17 +150,19 @@ const errors = reactive({
 })
 
 const submitText = computed(() => {
-  if (props.movementType === 'receipt') return 'Add Receipt'
-  if (props.movementType === 'issue') return 'Issue Stock'
+  if (props.movementType === 'receipt') return 'Receive Delivery'
+  if (props.movementType === 'usage') return 'Track Usage'
   return 'Submit'
 })
 
 const projectedStock = computed(() => {
   if (props.movementType === 'receipt') {
     return props.currentStock + (formData.quantity || 0)
-  } else {
+  }
+  if (props.movementType === 'usage') {
     return Math.max(0, props.currentStock - (formData.quantity || 0))
   }
+  return props.currentStock
 })
 
 // Reset form when component is shown
@@ -164,9 +186,6 @@ const validateForm = () => {
   // Validate quantity
   if (!formData.quantity || formData.quantity <= 0) {
     errors.quantity = 'Quantity must be greater than 0'
-    isValid = false
-  } else if (props.movementType === 'issue' && formData.quantity > props.currentStock) {
-    errors.quantity = `Cannot issue more than available stock (${props.currentStock} ${props.unit})`
     isValid = false
   }
 

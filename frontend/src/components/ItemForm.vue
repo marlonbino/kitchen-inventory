@@ -25,6 +25,23 @@
     />
 
     <BaseInput
+      v-model="formData.supplier"
+      label="Supplier/Vendor (Optional)"
+      placeholder="e.g., Ngara Market"
+      :error="errors.supplier"
+    />
+
+    <BaseInput
+      v-if="isAdmin"
+      v-model.number="formData.price_per_unit"
+      type="number"
+      step="0.01"
+      label="Price Per Unit in KES (Optional)"
+      placeholder="0.00"
+      :error="errors.price_per_unit"
+    />
+
+    <BaseInput
       v-model.number="formData.min_stock_level"
       type="number"
       label="Minimum Stock Level"
@@ -54,10 +71,11 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, computed } from 'vue'
+import { ref, reactive, watch, computed, onMounted } from 'vue'
 import BaseInput from './BaseInput.vue'
 import BaseSelect from './BaseSelect.vue'
 import BaseButton from './BaseButton.vue'
+import { getCategories, getUserInfo } from '../services/api.js'
 
 const props = defineProps({
   item: {
@@ -76,30 +94,37 @@ const props = defineProps({
 
 const emit = defineEmits(['submit', 'cancel'])
 
-const categoryOptions = [
-  { value: 'Produce', label: 'Produce' },
-  { value: 'Dairy', label: 'Dairy' },
-  { value: 'Pantry', label: 'Pantry' },
-  { value: 'Meat', label: 'Meat' },
-  { value: 'Spices', label: 'Spices' },
-  { value: 'Frozen', label: 'Frozen' },
-  { value: 'Other', label: 'Other' }
-]
+// Check if user is admin for price field visibility
+const isAdmin = ref(false)
+onMounted(async () => {
+  try {
+    const user = await getUserInfo()
+    isAdmin.value = user.role === 'admin'
+  } catch (error) {
+    console.error('Failed to get user info:', error)
+  }
+  loadCategories()
+})
+
+const categoryOptions = ref([
+  { value: '', label: 'Loading categories...' }
+])
 
 const unitOptions = [
-  { value: 'kg', label: 'Kilogram' },
-  { value: 'g', label: 'Gram' },
-  { value: 'lb', label: 'Pound' },
-  { value: 'oz', label: 'Ounce' },
+  { value: 'kg', label: 'Kilogram (Kg)' },
+  { value: 'litre', label: 'Litre (L)' },
   { value: 'piece', label: 'Piece' },
-  { value: 'bottle', label: 'Bottle' },
-  { value: 'pack', label: 'Pack' }
+  { value: 'packet', label: 'Packet' },
+  { value: 'dozen', label: 'Dozen' },
+  { value: 'bale', label: 'Bale' }
 ]
 
 const formData = reactive({
   name: '',
   category: '',
   unit: '',
+  supplier: '',
+  price_per_unit: null,
   min_stock_level: 0
 })
 
@@ -107,21 +132,44 @@ const errors = reactive({
   name: null,
   category: null,
   unit: null,
+  supplier: null,
+  price_per_unit: null,
   min_stock_level: null
 })
+
+// Load categories from API
+const loadCategories = async () => {
+  try {
+    const categories = await getCategories()
+    categoryOptions.value = categories.map(cat => ({
+      value: cat.id,
+      label: cat.name
+    }))
+  } catch (error) {
+    console.error('Error loading categories:', error)
+    // Keep default categories as fallback
+    categoryOptions.value = [
+      { value: '', label: 'Select category...' }
+    ]
+  }
+}
 
 // Initialize form data when item prop changes
 watch(() => props.item, (newItem) => {
   if (newItem) {
     formData.name = newItem.name || ''
-    formData.category = newItem.category || ''
+    formData.category = newItem.category || ''  // This will be the category ID now
     formData.unit = newItem.unit || ''
+    formData.supplier = newItem.supplier || ''
+    formData.price_per_unit = newItem.price_per_unit || null
     formData.min_stock_level = newItem.min_stock_level || 0
   } else {
     // Reset form for new item
     formData.name = ''
     formData.category = ''
     formData.unit = ''
+    formData.supplier = ''
+    formData.price_per_unit = null
     formData.min_stock_level = 0
   }
   // Clear errors
@@ -163,6 +211,14 @@ const validateForm = () => {
   } else if (formData.min_stock_level < 0) {
     errors.min_stock_level = 'Minimum stock level must be greater than or equal to 0'
     isValid = false
+  }
+
+  // Validate price if provided
+  if (formData.price_per_unit !== null && formData.price_per_unit !== undefined) {
+    if (formData.price_per_unit < 0) {
+      errors.price_per_unit = 'Price must be greater than or equal to 0'
+      isValid = false
+    }
   }
 
   return isValid
