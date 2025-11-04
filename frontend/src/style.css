@@ -106,7 +106,7 @@
     animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
-  /* Circular Badge with Glow */
+  /* Circular Badge with Dotted Border */
   .circular-badge {
     @apply relative flex flex-col items-center justify-center;
     width: 100px;
@@ -115,10 +115,12 @@
     min-height: 100px;
     border-radius: 50%;
     background: #262626;
-    border: 3px solid;
+    border: 4px dashed;
     position: relative;
     transition: all 0.3s ease;
     flex-shrink: 0;
+    opacity: 0;
+    animation: spin-fade-in 1.2s ease-out forwards;
   }
 
   @media (min-width: 640px) {
@@ -127,71 +129,57 @@
       height: 140px;
       min-width: 140px;
       min-height: 140px;
+      border-width: 5px;
     }
   }
 
   .circular-badge-blue {
     border-color: #3B82F6;
-    box-shadow: 
-      0 0 20px rgba(59, 130, 246, 0.5),
-      0 0 40px rgba(59, 130, 246, 0.3),
-      inset 0 0 20px rgba(59, 130, 246, 0.1);
   }
 
   .circular-badge-blue:hover {
-    box-shadow: 
-      0 0 30px rgba(59, 130, 246, 0.7),
-      0 0 60px rgba(59, 130, 246, 0.5),
-      inset 0 0 20px rgba(59, 130, 246, 0.2);
     transform: scale(1.05);
   }
 
   .circular-badge-red {
     border-color: #F87171;
-    box-shadow: 
-      0 0 20px rgba(248, 113, 113, 0.5),
-      0 0 40px rgba(248, 113, 113, 0.3),
-      inset 0 0 20px rgba(248, 113, 113, 0.1);
   }
 
   .circular-badge-red:hover {
-    box-shadow: 
-      0 0 30px rgba(248, 113, 113, 0.7),
-      0 0 60px rgba(248, 113, 113, 0.5),
-      inset 0 0 20px rgba(248, 113, 113, 0.2);
     transform: scale(1.05);
   }
 
   .circular-badge-yellow {
     border-color: #FBBF24;
-    box-shadow: 
-      0 0 20px rgba(251, 191, 36, 0.5),
-      0 0 40px rgba(251, 191, 36, 0.3),
-      inset 0 0 20px rgba(251, 191, 36, 0.1);
   }
 
   .circular-badge-yellow:hover {
-    box-shadow: 
-      0 0 30px rgba(251, 191, 36, 0.7),
-      0 0 60px rgba(251, 191, 36, 0.5),
-      inset 0 0 20px rgba(251, 191, 36, 0.2);
     transform: scale(1.05);
   }
 
   .circular-badge-green {
     border-color: #34D399;
-    box-shadow: 
-      0 0 20px rgba(52, 211, 153, 0.5),
-      0 0 40px rgba(52, 211, 153, 0.3),
-      inset 0 0 20px rgba(52, 211, 153, 0.1);
   }
 
   .circular-badge-green:hover {
-    box-shadow: 
-      0 0 30px rgba(52, 211, 153, 0.7),
-      0 0 60px rgba(52, 211, 153, 0.5),
-      inset 0 0 20px rgba(52, 211, 153, 0.2);
     transform: scale(1.05);
+  }
+
+  /* Staggered animation delays for multiple badges */
+  .circular-badge:nth-child(1) {
+    animation-delay: 0s;
+  }
+
+  .circular-badge:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .circular-badge:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  .circular-badge:nth-child(4) {
+    animation-delay: 0.45s;
   }
 
   .circular-badge-number {
@@ -211,6 +199,12 @@
     @apply mt-2;
     width: 24px;
     height: 24px;
+  }
+
+  /* Stat Card Animation */
+  .stat-card {
+    opacity: 0;
+    animation: slide-fade-in 0.8s ease-out forwards;
   }
 }
 
@@ -266,6 +260,49 @@
   }
   100% {
     background-position: 1000px 0;
+  }
+}
+
+@keyframes spin-in {
+  0% {
+    transform: rotate(0deg) scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes spin-fade-in {
+  0% {
+    transform: rotate(0deg) scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  75% {
+    transform: rotate(270deg) scale(0.95);
+    opacity: 0.85;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-fade-in {
+  0% {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 

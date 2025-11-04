@@ -151,10 +151,11 @@ class RequisitionSerializer(serializers.ModelSerializer):
         model = Requisition
         fields = [
             'id', 'item', 'item_id', 'item_name', 'quantity_requested',
-            'requested_by', 'status', 'date_requested', 'date_processed',
+            'requested_by', 'estimated_cost', 'status', 'date_requested', 'date_processed',
+            'approved_by', 'money_received_by',
             'assigned_to', 'received_by', 'date_received', 'quantity_received', 'receipt_notes'
         ]
-        read_only_fields = ['date_requested', 'date_processed', 'date_received', 'item', 'item_name']
+        read_only_fields = ['date_requested', 'date_processed', 'date_received', 'item', 'item_name', 'approved_by']
 
     def get_item_name(self, obj):
         """

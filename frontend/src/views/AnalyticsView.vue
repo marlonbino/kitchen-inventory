@@ -44,68 +44,65 @@
         <!-- Summary Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <!-- Total Items Card -->
-          <div class="group bg-gradient-to-br from-blue-900/20 to-neutral-900 dark:from-blue-900/20 dark:to-neutral-900 rounded-2xl p-6 border border-blue-500/20 shadow-lg hover:shadow-2xl hover:border-blue-500/40 transition-all duration-300">
+          <div class="stat-card group bg-gradient-to-br from-blue-900/20 to-neutral-900 dark:from-blue-900/20 dark:to-neutral-900 rounded-2xl p-6 border-2 border-blue-500/30 shadow-lg hover:shadow-2xl hover:border-blue-500/60 transition-all duration-300" style="animation-delay: 0s;">
             <div class="flex items-center justify-between">
               <div class="flex-1">
-                <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Total Items</p>
-                <p class="text-4xl font-extrabold text-white group-hover:scale-105 transition-transform duration-300">{{ stats.total_items }}</p>
-                <p class="text-xs text-gray-500 mt-2">In inventory</p>
+                <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Total Items</p>
+                <p class="text-4xl sm:text-5xl font-extrabold text-white group-hover:scale-105 transition-transform duration-300">{{ stats.total_items }}</p>
+                <p class="text-xs text-gray-500 mt-3">In inventory</p>
               </div>
-              <div class="p-4 bg-blue-500/20 rounded-2xl group-hover:bg-blue-500/30 group-hover:scale-110 transition-all duration-300">
-                <svg class="w-10 h-10 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
+              <div class="p-4 bg-transparent rounded-2xl group-hover:bg-blue-500/40 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 flex-shrink-0">
+                <i class="fas fa-cubes text-4xl text-blue-400"></i>
               </div>
             </div>
           </div>
 
           <!-- Urgent Reorders Card -->
-          <div class="group bg-gradient-to-br from-red-900/20 to-neutral-900 dark:from-red-900/20 dark:to-neutral-900 rounded-2xl p-6 border border-red-500/20 shadow-lg hover:shadow-2xl hover:border-red-500/40 transition-all duration-300">
+          <div class="stat-card group bg-gradient-to-br from-red-900/20 to-neutral-900 dark:from-red-900/20 dark:to-neutral-900 rounded-2xl p-6 border-2 border-red-500/30 shadow-lg hover:shadow-2xl hover:border-red-500/60 transition-all duration-300" style="animation-delay: 0.15s;">
             <div class="flex items-center justify-between">
               <div class="flex-1">
-                <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Urgent Reorders</p>
+                <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Urgent Reorders</p>
                 <div class="flex items-baseline gap-2">
-                  <p class="text-4xl font-extrabold text-red-400 group-hover:scale-105 transition-transform duration-300">{{ stats.low_stock_count }}</p>
+                  <p class="text-4xl sm:text-5xl font-extrabold text-red-400 group-hover:scale-105 transition-transform duration-300">{{ stats.low_stock_count }}</p>
                   <span v-if="stats.low_stock_count > 0" class="px-2 py-1 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">!</span>
                 </div>
-                <p class="text-xs text-gray-500 mt-2">Need restocking</p>
+                <p class="text-xs text-gray-500 mt-3">Need restocking</p>
               </div>
-              <div class="p-4 bg-red-500/20 rounded-2xl group-hover:bg-red-500/30 group-hover:scale-110 transition-all duration-300">
-                <svg class="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
+              <div class="p-4 bg-transparent rounded-2xl group-hover:bg-red-500/40 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 flex-shrink-0">
+                <i class="fas fa-exclamation-triangle text-4xl text-red-400"></i>
               </div>
             </div>
           </div>
 
           <!-- Pending Approvals Card -->
-          <div class="group bg-gradient-to-br from-yellow-900/20 to-neutral-900 dark:from-yellow-900/20 dark:to-neutral-900 rounded-2xl p-6 border border-yellow-500/20 shadow-lg hover:shadow-2xl hover:border-yellow-500/40 transition-all duration-300">
+          <div class="stat-card group bg-gradient-to-br from-yellow-900/20 to-neutral-900 dark:from-yellow-900/20 dark:to-neutral-900 rounded-2xl p-6 border-2 border-yellow-500/30 shadow-lg hover:shadow-2xl hover:border-yellow-500/60 transition-all duration-300" style="animation-delay: 0.3s;">
             <div class="flex items-center justify-between">
               <div class="flex-1">
-                <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Pending Approvals</p>
-                <p class="text-4xl font-extrabold text-yellow-400 group-hover:scale-105 transition-transform duration-300">{{ stats.pending_requisitions }}</p>
-                <p class="text-xs text-gray-500 mt-2">Awaiting action</p>
+                <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Pending Approvals</p>
+                <p class="text-4xl sm:text-5xl font-extrabold text-yellow-400 group-hover:scale-105 transition-transform duration-300">{{ stats.pending_requisitions }}</p>
+                <p class="text-xs text-gray-500 mt-3">Awaiting action</p>
               </div>
-              <div class="p-4 bg-yellow-500/20 rounded-2xl group-hover:bg-yellow-500/30 group-hover:scale-110 transition-all duration-300">
-                <svg class="w-10 h-10 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+              <div class="p-4 bg-transparent rounded-2xl group-hover:bg-yellow-500/40 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 flex-shrink-0">
+                <i class="fas fa-clipboard-check text-4xl text-yellow-400"></i>
               </div>
             </div>
           </div>
 
           <!-- Total Stock Value Card -->
-          <div class="group bg-gradient-to-br from-green-900/20 to-neutral-900 dark:from-green-900/20 dark:to-neutral-900 rounded-2xl p-6 border border-green-500/20 shadow-lg hover:shadow-2xl hover:border-green-500/40 transition-all duration-300">
-            <div class="flex items-center justify-between">
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Stock Value</p>
-                <p class="text-3xl lg:text-4xl font-extrabold text-green-400 group-hover:scale-105 transition-transform duration-300 truncate">{{ formatCurrency(stats.total_stock_value) }}</p>
-                <p class="text-xs text-gray-500 mt-2">Kenyan Shillings</p>
-              </div>
-              <div class="p-4 bg-green-500/20 rounded-2xl group-hover:bg-green-500/30 group-hover:scale-110 transition-all duration-300 flex-shrink-0">
-                <svg class="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+          <div class="stat-card group bg-gradient-to-br from-green-900/20 to-neutral-900 dark:from-green-900/20 dark:to-neutral-900 rounded-2xl p-6 border-2 border-green-500/30 shadow-lg hover:shadow-2xl hover:border-green-500/60 transition-all duration-300" style="animation-delay: 0.45s;">
+            <div class="flex flex-col gap-4">
+              <div class="flex items-start justify-between">
+                <div class="flex-1 overflow-hidden">
+                  <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Stock Value</p>
+                  <div class="group-hover:scale-105 transition-transform duration-300">
+                    <p class="text-lg sm:text-xl font-bold text-green-400 mb-1">KSh</p>
+                    <p class="text-lg sm:text-xl lg:text-2xl font-extrabold text-green-400 whitespace-nowrap leading-tight">{{ formatCurrency(stats.total_stock_value).replace('KSh ', '') }}</p>
+                  </div>
+                  <p class="text-xs text-gray-500 mt-3">Kenyan Shillings</p>
+                </div>
+                <div class="p-4 bg-transparent rounded-2xl group-hover:bg-green-500/40 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 flex-shrink-0">
+                  <i class="fas fa-money-bill-wave text-4xl text-green-400"></i>
+                </div>
               </div>
             </div>
           </div>
@@ -261,7 +258,7 @@
       title="Generate Custom Report"
     >
       <div class="space-y-4">
-        <p class="text-gray-600 dark:text-gray-300">Select the period for your report:</p>
+        <p class="text-gray-600 dark:text-gray-300">Configure your report settings:</p>
         
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -280,7 +277,31 @@
           </select>
         </div>
 
-        <div class="flex justify-end gap-3 pt-4 border-t">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Purchase Request Status
+          </label>
+          <select
+            v-model="reportStatus"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-neutral-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-700 text-gray-900 dark:text-white"
+          >
+            <option value="all">All Requests</option>
+            <option value="pending">Pending Approval</option>
+            <option value="approved">Approved</option>
+            <option value="awaiting_delivery">Awaiting Delivery</option>
+            <option value="delivered">Delivered</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+          <p class="text-sm text-blue-800 dark:text-blue-200">
+            <i class="fas fa-info-circle mr-2"></i>
+            Report will include purchase request history based on your filter settings.
+          </p>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t dark:border-neutral-700">
           <BaseButton
             variant="secondary"
             @click="showReportModal = false"
@@ -291,6 +312,7 @@
             variant="primary"
             @click="generateCustomReport"
           >
+            <i class="fas fa-print mr-2"></i>
             Generate & Print
           </BaseButton>
         </div>
@@ -328,6 +350,7 @@ const toast = useToast()
 const loading = ref(false)
 const showReportModal = ref(false)
 const reportPeriod = ref('month')
+const reportStatus = ref('all')
 const stats = ref({
   total_items: 0,
   low_stock_count: 0,
@@ -335,6 +358,7 @@ const stats = ref({
   recent_movements: [],
   total_stock_value: 0
 })
+const requisitions = ref([])
 
 // Computed data for charts
 const categoryData = computed(() => {
@@ -365,18 +389,87 @@ const lowStockData = computed(() => {
   })).sort((a, b) => a.percentage - b.percentage)
 })
 
+const filteredRequisitions = computed(() => {
+  const dateRange = getDateRange(reportPeriod.value)
+  
+  return requisitions.value.filter(req => {
+    // Filter by status
+    if (reportStatus.value !== 'all' && req.status !== reportStatus.value) {
+      return false
+    }
+    
+    // Filter by date range
+    if (dateRange.start) {
+      const reqDate = new Date(req.date_requested)
+      if (reqDate < dateRange.start || reqDate > dateRange.end) {
+        return false
+      }
+    }
+    
+    return true
+  }).sort((a, b) => new Date(b.date_requested) - new Date(a.date_requested))
+})
+
+const requisitionStats = computed(() => {
+  const total = filteredRequisitions.value.length
+  const approved = filteredRequisitions.value.filter(r => r.status === 'awaiting_delivery' || r.status === 'delivered').length
+  const rejected = filteredRequisitions.value.filter(r => r.status === 'rejected').length
+  const pending = filteredRequisitions.value.filter(r => r.status === 'pending').length
+  const totalCost = filteredRequisitions.value.reduce((sum, req) => {
+    return sum + (parseFloat(req.estimated_cost) || 0)
+  }, 0)
+  
+  return {
+    total,
+    approved,
+    rejected,
+    pending,
+    totalCost
+  }
+})
+
 // Methods
 const loadAnalytics = async () => {
   loading.value = true
   try {
     const data = await getDashboardStats()
     stats.value = data
+    await store.fetchRequisitions({ ordering: '-date_requested' })
+    requisitions.value = store.requisitions
   } catch (err) {
     toast.error('Failed to load analytics data')
     console.error('Analytics error:', err)
   } finally {
     loading.value = false
   }
+}
+
+const getStatusLabel = (status) => {
+  const labels = {
+    pending: 'Pending Approval',
+    approved: 'Approved',
+    awaiting_delivery: 'Awaiting Delivery',
+    delivered: 'Delivered',
+    rejected: 'Rejected'
+  }
+  return labels[status] || status
+}
+
+const getStatusColor = (status) => {
+  const colors = {
+    pending: '#f59e0b',
+    approved: '#3b82f6',
+    awaiting_delivery: '#f97316',
+    delivered: '#10b981',
+    rejected: '#ef4444'
+  }
+  return colors[status] || '#6b7280'
+}
+
+const getItemUnit = (req) => {
+  if (!req) return 'units'
+  const item = store.itemById(req.item_id || req.item?.id)
+  return item?.unit || 'units'
 }
 
 const formatDate = (dateString) => {
@@ -450,11 +543,11 @@ const generateCustomReport = () => {
   
   const reportHtml = `
     <div style="font-family: 'Roboto', Arial, sans-serif; padding: 20px;">
-      <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px; border-bottom: 2px solid #3b82f6; padding-bottom: 15px;">
-        <img src="data:image/svg+xml;base64,${logoBase64}" alt="BITZ Logo" style="height: 60px; width: auto; filter: brightness(0) invert(1);">
+      <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px; border-bottom: 3px solid #3b82f6; padding-bottom: 15px;">
+        <img src="${bitzLogo}" alt="BITZ Logo" style="height: 50px; width: auto; flex-shrink: 0;">
         <div>
-          <h2 style="color: #1f2937; margin: 0 0 5px 0;">BITZ Kitchen System</h2>
-          <p style="color: #6b7280; margin: 0; font-size: 14px;">Inventory Report</p>
+          <h1 style="color: #1f2937; margin: 0 0 5px 0; font-size: 28px; font-weight: bold;">BITZ Kitchen System</h1>
+          <p style="color: #6b7280; margin: 0; font-size: 14px; font-weight: 500;">Inventory Report</p>
         </div>
       </div>
       
@@ -533,6 +626,70 @@ const generateCustomReport = () => {
         </table>
       </div>
       ` : ''}
+      
+      <div style="margin-bottom: 30px;">
+        <h3 style="color: #1f2937; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">Purchase Request History</h3>
+        <div style="background: #f9fafb; padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 15px;">
+          <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px;">
+            <div>
+              <p style="color: #6b7280; font-size: 12px; margin: 0 0 5px 0;">Total Requests</p>
+              <p style="font-size: 24px; font-weight: bold; color: #1f2937; margin: 0;">${requisitionStats.value.total}</p>
+            </div>
+            <div>
+              <p style="color: #10b981; font-size: 12px; margin: 0 0 5px 0;">Approved</p>
+              <p style="font-size: 24px; font-weight: bold; color: #10b981; margin: 0;">${requisitionStats.value.approved}</p>
+            </div>
+            <div>
+              <p style="color: #ef4444; font-size: 12px; margin: 0 0 5px 0;">Rejected</p>
+              <p style="font-size: 24px; font-weight: bold; color: #ef4444; margin: 0;">${requisitionStats.value.rejected}</p>
+            </div>
+            <div>
+              <p style="color: #f59e0b; font-size: 12px; margin: 0 0 5px 0;">Pending</p>
+              <p style="font-size: 24px; font-weight: bold; color: #f59e0b; margin: 0;">${requisitionStats.value.pending}</p>
+            </div>
+            <div>
+              <p style="color: #059669; font-size: 12px; margin: 0 0 5px 0;">Total Cost</p>
+              <p style="font-size: 20px; font-weight: bold; color: #059669; margin: 0;">${formatCurrency(requisitionStats.value.totalCost)}</p>
+            </div>
+          </div>
+        </div>
+        ${filteredRequisitions.value.length > 0 ? `
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px;">
+          <thead>
+            <tr style="background: #f3f4f6;">
+              <th style="padding: 10px; text-align: left; border-bottom: 2px solid #d1d5db;">Date</th>
+              <th style="padding: 10px; text-align: left; border-bottom: 2px solid #d1d5db;">Item</th>
+              <th style="padding: 10px; text-align: right; border-bottom: 2px solid #d1d5db;">Qty</th>
+              <th style="padding: 10px; text-align: right; border-bottom: 2px solid #d1d5db;">Cost</th>
+              <th style="padding: 10px; text-align: left; border-bottom: 2px solid #d1d5db;">Requested By</th>
+              <th style="padding: 10px; text-align: left; border-bottom: 2px solid #d1d5db;">Money Received By</th>
+              <th style="padding: 10px; text-align: left; border-bottom: 2px solid #d1d5db;">Approved By</th>
+              <th style="padding: 10px; text-align: center; border-bottom: 2px solid #d1d5db;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filteredRequisitions.value.map(req => `
+              <tr style="border-bottom: 1px solid #e5e7eb;">
+                <td style="padding: 8px; white-space: nowrap;">${formatDate(req.date_requested)}</td>
+                <td style="padding: 8px;">${req.item_name || req.item?.name || 'Unknown'}</td>
+                <td style="padding: 8px; text-align: right;">${req.quantity_requested} ${getItemUnit(req)}</td>
+                <td style="padding: 8px; text-align: right; font-weight: bold; color: #059669;">${req.estimated_cost ? formatCurrency(req.estimated_cost) : '-'}</td>
+                <td style="padding: 8px;">${req.requested_by}</td>
+                <td style="padding: 8px;">${req.money_received_by || '-'}</td>
+                <td style="padding: 8px;">${req.approved_by || '-'}</td>
+                <td style="padding: 8px; text-align: center;">
+                  <span style="padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; background-color: ${getStatusColor(req.status)}20; color: ${getStatusColor(req.status)};">
+                    ${getStatusLabel(req.status)}
+                  </span>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        ` : `
+        <p style="text-align: center; padding: 20px; color: #6b7280;">No purchase requests found for the selected criteria.</p>
+        `}
+      </div>
       
       <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; color: #6b7280; font-size: 12px; text-align: center;">
         <p>This report was generated by BITZ Kitchen System</p>

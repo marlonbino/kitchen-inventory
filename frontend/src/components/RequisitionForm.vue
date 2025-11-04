@@ -51,11 +51,22 @@
     />
 
     <BaseInput
+      v-model.number="formData.estimated_cost"
+      type="number"
+      label="Estimated Cost (Optional)"
+      placeholder="Enter estimated cost in KSh"
+      :error="errors.estimated_cost"
+      :min="0"
+      step="0.01"
+    />
+
+    <BaseInput
       v-model="formData.requested_by"
       label="Requested By"
       placeholder="Enter name or department"
       :error="errors.requested_by"
       :required="true"
+      :readonly="true"
     />
 
     <div>
@@ -82,11 +93,12 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, watch, onMounted } from 'vue'
 import BaseInput from './BaseInput.vue'
 import BaseSelect from './BaseSelect.vue'
 import BaseButton from './BaseButton.vue'
 import { useInventoryStore } from '../stores/inventory'
+import { getUserInfo } from '../services/api.js'
 
 const props = defineProps({
   loading: {
@@ -106,13 +118,25 @@ const store = useInventoryStore()
 const formData = reactive({
   item_id: null,
   quantity_requested: 1,
+  estimated_cost: null,
   requested_by: '',
   notes: ''
+})
+
+// Load current user info and auto-fill requested_by
+onMounted(async () => {
+  try {
+    const user = await getUserInfo()
+    formData.requested_by = user.username || user.email || ''
+  } catch (error) {
+    console.error('Failed to get user info:', error)
+  }
 })
 
 const errors = reactive({
   item_id: null,
   quantity_requested: null,
+  estimated_cost: null,
   requested_by: null,
   notes: null
 })
@@ -164,12 +188,19 @@ watch(() => formData.item_id, (newItemId) => {
 })
 
 // Reset form when modal closes
-watch(() => props.loading, (newVal) => {
+watch(() => props.loading, async (newVal) => {
   if (!newVal && formData.item_id) {
     // Form was submitted successfully, reset
     formData.item_id = null
     formData.quantity_requested = 1
-    formData.requested_by = ''
+    formData.estimated_cost = null
+    // Re-fetch user info
+    try {
+      const user = await getUserInfo()
+      formData.requested_by = user.username || user.email || ''
+    } catch (error) {
+      formData.requested_by = ''
+    }
     formData.notes = ''
     Object.keys(errors).forEach(key => {
       errors[key] = null
@@ -211,6 +242,7 @@ const handleSubmit = () => {
     const payload = {
       item_id: formData.item_id,
       quantity_requested: formData.quantity_requested,
+      estimated_cost: formData.estimated_cost || undefined,
       requested_by: formData.requested_by.trim(),
       status: 'pending',
       notes: formData.notes || undefined

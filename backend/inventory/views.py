@@ -210,13 +210,22 @@ class RequisitionViewSet(viewsets.ModelViewSet):
         """
         Custom action to approve a requisition.
         Updates status to 'awaiting_delivery' and sets date_processed.
+        Requires money_received_by to indicate who received the money.
         ONLY ADMINS CAN APPROVE.
         """
         # Check if user is admin
-        if not is_admin(request.user):
+        if not request.user.is_staff:
             return Response(
                 {'error': 'Only administrators can approve requisitions.'},
                 status=status.HTTP_403_FORBIDDEN
+            )
+        
+        # Get money_received_by from request
+        money_received_by = request.data.get('money_received_by', '').strip()
+        if not money_received_by:
+            return Response(
+                {'error': 'Please specify who received the money for this purchase.'},
+                status=status.HTTP_400_BAD_REQUEST
             )
         
         try:
@@ -224,12 +233,14 @@ class RequisitionViewSet(viewsets.ModelViewSet):
             
             if requisition.status != 'pending':
                 return Response(
-                    {'error': f'Requisition is already {requisition.status}'},
+                    {'error': 'Only pending requisitions can be approved.'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
             requisition.status = 'awaiting_delivery'
             requisition.date_processed = timezone.now()
+            requisition.approved_by = request.user.username
+            requisition.money_received_by = money_received_by
             requisition.save()
             
             serializer = self.get_serializer(requisition)

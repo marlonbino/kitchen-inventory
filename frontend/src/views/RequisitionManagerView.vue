@@ -506,17 +506,37 @@
         </div>
       </BaseModal>
 
-      <!-- Approval Confirmation -->
-      <ConfirmDialog
-        :show="showApproveConfirm"
-        title="Approve Purchase Request"
-        :message="`Approve purchase request for ${approveRequisition?.quantity_requested} ${getItemUnit(approveRequisition)} of ${approveRequisition?.item_name || 'item'}?`"
-        confirm-text="Approve"
-        cancel-text="Cancel"
-        variant="primary"
-        @confirm="handleApprove"
-        @cancel="cancelApprove"
-      />
+      <!-- Approval Modal -->
+      <BaseModal :show="showApproveConfirm" title="Approve Purchase Request" @close="cancelApprove">
+        <div v-if="approveRequisition" class="space-y-4">
+          <div class="p-3 bg-blue-50 border border-blue-200 rounded-md">
+            <p class="text-sm font-medium text-blue-900">
+              Approve purchase request for {{ approveRequisition.quantity_requested }} {{ getItemUnit(approveRequisition) }} of {{ approveRequisition.item_name || 'item' }}?
+            </p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Who Received the Money? <span class="text-red-500">*</span>
+            </label>
+            <input
+              v-model="moneyReceivedBy"
+              type="text"
+              placeholder="Enter name of person who received the money..."
+              class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            <p class="text-xs text-gray-500 mt-1">Required before approving this request</p>
+          </div>
+          <div class="flex justify-end gap-3 pt-4 border-t">
+            <BaseButton variant="secondary" @click="cancelApprove" :disabled="actionLoading">
+              Cancel
+            </BaseButton>
+            <BaseButton variant="primary" @click="handleApprove" :loading="actionLoading" :disabled="actionLoading || !moneyReceivedBy.trim()">
+              Approve
+            </BaseButton>
+          </div>
+        </div>
+      </BaseModal>
 
       <!-- Rejection Confirmation -->
       <ConfirmDialog
@@ -530,17 +550,37 @@
         @cancel="cancelReject"
       />
 
-      <!-- Bulk Approve Confirmation -->
-      <ConfirmDialog
-        :show="showBulkApproveConfirm"
-        title="Approve All Purchase Requests"
-        :message="`Approve ${selectedRequisitions.length} purchase request(s)?`"
-        confirm-text="Approve All"
-        cancel-text="Cancel"
-        variant="primary"
-        @confirm="handleBulkApprove"
-        @cancel="showBulkApproveConfirm = false"
-      />
+      <!-- Bulk Approve Modal -->
+      <BaseModal :show="showBulkApproveConfirm" title="Approve Multiple Purchase Requests" @close="cancelBulkApprove">
+        <div class="space-y-4">
+          <div class="p-3 bg-blue-50 border border-blue-200 rounded-md">
+            <p class="text-sm font-medium text-blue-900">
+              Approve {{ selectedRequisitions.length }} purchase request(s)?
+            </p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Who Received the Money? <span class="text-red-500">*</span>
+            </label>
+            <input
+              v-model="bulkMoneyReceivedBy"
+              type="text"
+              placeholder="Enter name of person who received the money..."
+              class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            <p class="text-xs text-gray-500 mt-1">This will apply to all selected requests</p>
+          </div>
+          <div class="flex justify-end gap-3 pt-4 border-t">
+            <BaseButton variant="secondary" @click="cancelBulkApprove" :disabled="bulkActionLoading">
+              Cancel
+            </BaseButton>
+            <BaseButton variant="primary" @click="handleBulkApprove" :loading="bulkActionLoading" :disabled="bulkActionLoading || !bulkMoneyReceivedBy.trim()">
+              Approve All
+            </BaseButton>
+          </div>
+        </div>
+      </BaseModal>
 
       <!-- Assign Delivery Modal -->
       <BaseModal :show="showAssignModal" title="Assign Delivery Person" @close="closeAssignModal">
@@ -693,6 +733,8 @@ const approveRequisition = ref(null)
 const rejectRequisition = ref(null)
 const assignRequisition = ref(null)
 const assignToName = ref('')
+const moneyReceivedBy = ref('')
+const bulkMoneyReceivedBy = ref('')
 const quantityReceived = ref(null)
 const receiptNotes = ref('')
 
@@ -974,14 +1016,20 @@ const confirmApprove = (req) => {
 const cancelApprove = () => {
   showApproveConfirm.value = false
   approveRequisition.value = null
+  moneyReceivedBy.value = ''
 }
 
 const handleApprove = async () => {
   if (!approveRequisition.value) return
 
+  if (!moneyReceivedBy.value.trim()) {
+    toast.error('Please specify who received the money')
+    return
+  }
+
   actionLoading.value = true
   try {
-    await store.approveRequisition(approveRequisition.value.id)
+    await store.approveRequisition(approveRequisition.value.id, moneyReceivedBy.value.trim())
     toast.success('Requisition approved successfully')
     cancelApprove()
     await loadRequisitions()
@@ -1023,16 +1071,28 @@ const handleReject = async () => {
   }
 }
 
+const cancelBulkApprove = () => {
+  showBulkApproveConfirm.value = false
+  bulkMoneyReceivedBy.value = ''
+}
+
 const handleBulkApprove = async () => {
   if (selectedRequisitions.value.length === 0) return
 
+  if (!bulkMoneyReceivedBy.value.trim()) {
+    toast.error('Please specify who received the money')
+    return
+  }
+
   bulkActionLoading.value = true
   try {
-    const promises = selectedRequisitions.value.map(id => store.approveRequisition(id))
+    const promises = selectedRequisitions.value.map(id => 
+      store.approveRequisition(id, bulkMoneyReceivedBy.value.trim())
+    )
     await Promise.all(promises)
     toast.success(`${selectedRequisitions.value.length} requisition(s) approved successfully`)
     selectedRequisitions.value = []
-    showBulkApproveConfirm.value = false
+    cancelBulkApprove()
     await loadRequisitions()
     await store.fetchItems()
   } catch (err) {

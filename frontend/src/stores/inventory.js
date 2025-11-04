@@ -282,10 +282,11 @@ export const useInventoryStore = defineStore('inventory', {
     /**
      * Approve a requisition
      * @param {number} id - Requisition ID
+     * @param {string} moneyReceivedBy - Name of person who received the money
      */
-    async approveRequisition(id) {
+    async approveRequisition(id, moneyReceivedBy) {
       try {
-        const updatedRequisition = await apiApproveRequisition(id)
+        const updatedRequisition = await apiApproveRequisition(id, moneyReceivedBy)
         const index = this.requisitions.findIndex(req => req.id === id)
         if (index !== -1) {
           this.requisitions[index] = updatedRequisition

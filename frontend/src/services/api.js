@@ -348,8 +348,10 @@ export const getRequisition = async (id) => {
  * @param {number} id - Requisition ID
  * @returns {Promise} Updated requisition data
  */
-export const approveRequisition = async (id) => {
-  const response = await apiClient.post(`/requisitions/${id}/approve/`);
+export const approveRequisition = async (id, moneyReceivedBy) => {
+  const response = await apiClient.post(`/requisitions/${id}/approve/`, {
+    money_received_by: moneyReceivedBy
+  });
   return response.data;
 };
 

@@ -1,6 +1,10 @@
-# Kitchen Inventory Backend
+# BITZ Kitchen Inventory Backend
 
-Django REST Framework backend for kitchen inventory management system.
+Django REST Framework API for the BITZ Kitchen Inventory Management System.
+
+[![Django](https://img.shields.io/badge/Django-4.2+-green.svg)](https://www.djangoproject.com/)
+[![DRF](https://img.shields.io/badge/DRF-3.14+-blue.svg)](https://www.django-rest-framework.org/)
+[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
 
 ## Setup
 
@@ -45,15 +49,19 @@ python manage.py migrate
 
 6. (Optional) Populate sample data:
 ```bash
-python manage.py populate_sample_data
+python manage.py seed_test_data
 ```
 
 This command creates:
-- 20 sample items across different categories (Produce, Dairy, Pantry, Meat, Spices, Frozen)
-- 35 sample stock movements (receipts, issues, writeoffs)
-- 8 sample requisitions with mixed statuses (pending, approved, rejected)
+- Admin user (username: `admin`, password: `p@ssw0rd`)
+- Manager user (username: `manager`, password: `p@ssw0rd`)
+- Staff user (username: `staff`, password: `p@ssw0rd`)
+- Sample categories (Groceries, Meat, Dairy, Produce, etc.)
+- 20+ sample items across different categories
+- Sample stock movements (receipts, usage, waste)
+- Sample requisitions with mixed statuses
 
-**Note:** The command is idempotent - it safely clears existing data and recreates sample data, so you can run it multiple times.
+**Note:** The command safely clears existing data and recreates sample data.
 
 7. Create a superuser (if not exists):
 ```bash
@@ -71,9 +79,64 @@ Admin panel: `http://localhost:8000/admin/`
 
 API Base URL: `http://localhost:8000/api/`
 
+## Authentication
+
+The API uses **Token Authentication**. Users must authenticate to access most endpoints.
+
+### Login
+
+```bash
+POST /api/auth/login/
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "p@ssw0rd"
+}
+```
+
+**Response:**
+```json
+{
+  "token": "9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b",
+  "user": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@bitz.com",
+    "role": "admin"
+  }
+}
+```
+
+### Using the Token
+
+Include the token in the `Authorization` header for all subsequent requests:
+
+```bash
+Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+```
+
+### Logout
+
+```bash
+POST /api/auth/logout/
+Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+```
+
+### Get Current User
+
+```bash
+GET /api/auth/user/
+Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+```
+
+---
+
 ## API Endpoints
 
 All endpoints support pagination (20 items per page by default) and can be filtered/searched.
+
+**Note:** Most endpoints require authentication. Include the token in the `Authorization` header.
 
 ### Items API
 
@@ -471,12 +534,37 @@ The frontend will typically run on `http://localhost:5173` (Vite default port).
 - All endpoints return JSON
 - Errors return appropriate HTTP status codes with error details
 
-### Authentication (Future)
+### User Management (Admin Only)
 
-Currently, the API uses `AllowAny` permissions. For production, implement authentication:
-- JWT tokens
-- Session-based authentication
-- API keys for internal services
+**Base URL:** `http://localhost:8000/api/admin/users/`
+
+#### List All Users
+```bash
+GET /api/admin/users/
+Authorization: Token <admin-token>
+```
+
+#### Create User
+```bash
+POST /api/admin/users/create/
+Authorization: Token <admin-token>
+Content-Type: application/json
+
+{
+  "username": "newuser",
+  "password": "secure_password",
+  "email": "user@example.com",
+  "role": "staff"  // Options: staff, manager, admin
+}
+```
+
+#### Delete User
+```bash
+DELETE /api/admin/users/<user_id>/delete/
+Authorization: Token <admin-token>
+```
+
+**Note:** Requires admin role. Cannot delete your own account.
 
 ### CORS Configuration
 
