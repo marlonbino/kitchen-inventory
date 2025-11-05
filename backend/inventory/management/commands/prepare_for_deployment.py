@@ -22,7 +22,7 @@ class Command(BaseCommand):
         if not options['confirm']:
             self.stdout.write(
                 self.style.WARNING(
-                    '\n⚠️  This command will remove all test data (requisitions and stock movements).\n'
+                    '\nWARNING: This command will remove all test data (requisitions and stock movements).\n'
                     'Items, categories, and users will be preserved.\n\n'
                     'Run with --confirm flag to proceed:\n'
                     'python manage.py prepare_for_deployment --confirm\n'
@@ -30,7 +30,7 @@ class Command(BaseCommand):
             )
             return
 
-        self.stdout.write(self.style.WARNING('\n🚀 Preparing database for production deployment...\n'))
+        self.stdout.write(self.style.WARNING('\nPreparing database for production deployment...\n'))
 
         with transaction.atomic():
             # Count before deletion
@@ -40,7 +40,7 @@ class Command(BaseCommand):
             categories_count = Category.objects.count()
             users_count = User.objects.count()
 
-            self.stdout.write(f'\n📊 Current Database State:')
+            self.stdout.write(f'\nCurrent Database State:')
             self.stdout.write(f'  - Items: {items_count}')
             self.stdout.write(f'  - Categories: {categories_count}')
             self.stdout.write(f'  - Users: {users_count}')
@@ -48,36 +48,36 @@ class Command(BaseCommand):
             self.stdout.write(f'  - Requisitions: {requisitions_count} (will be deleted)')
 
             # Delete test data
-            self.stdout.write('\n🗑️  Removing test data...')
+            self.stdout.write('\nRemoving test data...')
             
             StockMovement.objects.all().delete()
-            self.stdout.write(self.style.SUCCESS(f'  ✓ Deleted {movements_count} stock movements'))
+            self.stdout.write(self.style.SUCCESS(f'  [OK] Deleted {movements_count} stock movements'))
             
             Requisition.objects.all().delete()
-            self.stdout.write(self.style.SUCCESS(f'  ✓ Deleted {requisitions_count} requisitions'))
+            self.stdout.write(self.style.SUCCESS(f'  [OK] Deleted {requisitions_count} requisitions'))
 
             # Reset item stock levels to current_stock only (remove movement history)
-            self.stdout.write('\n📦 Resetting item stock to current levels...')
+            self.stdout.write('\nResetting item stock to current levels...')
             for item in Item.objects.all():
                 # Keep current stock level but reset min/max if needed
                 # Optionally, you could reset current_stock to 0 if you want fresh start
                 pass
             
-            self.stdout.write(self.style.SUCCESS(f'  ✓ Items stock preserved'))
+            self.stdout.write(self.style.SUCCESS(f'  [OK] Items stock preserved'))
 
             # Final state
-            self.stdout.write(f'\n✅ Production Database Ready!')
-            self.stdout.write(f'\n📊 Final Database State:')
-            self.stdout.write(f'  - Items: {Item.objects.count()} ✓')
-            self.stdout.write(f'  - Categories: {Category.objects.count()} ✓')
-            self.stdout.write(f'  - Users: {User.objects.count()} ✓')
+            self.stdout.write(f'\nProduction Database Ready!')
+            self.stdout.write(f'\nFinal Database State:')
+            self.stdout.write(f'  - Items: {Item.objects.count()}')
+            self.stdout.write(f'  - Categories: {Category.objects.count()}')
+            self.stdout.write(f'  - Users: {User.objects.count()}')
             self.stdout.write(f'  - Stock Movements: {StockMovement.objects.count()} (clean)')
             self.stdout.write(f'  - Requisitions: {Requisition.objects.count()} (clean)')
 
             self.stdout.write(
                 self.style.SUCCESS(
-                    '\n🎉 Database successfully prepared for production deployment!\n'
-                    '   All test data removed. Items, categories, and users preserved.\n'
+                    '\nSUCCESS: Database successfully prepared for production deployment!\n'
+                    '         All test data removed. Items, categories, and users preserved.\n'
                 )
             )
 
